@@ -31,7 +31,7 @@ class CoursController extends Controller
             'enseignant_id' => 'required|exists:users,id',
             'periodicite' => 'required',
             'heure_deb' => 'required',
-            'heure_fin' => 'required|after:start_time',
+            'heure_fin' => 'required|after:heure_deb',
             'date' => 'required|date',
             'status' => 'sometimes|in:planifié,Terminé,annulé',
           
@@ -77,7 +77,7 @@ class CoursController extends Controller
             'enseignant_id' => 'sometimes|exists:users,id',
             'periodicite' => 'sometimes',
             'heure_deb' => 'sometimes',
-            'heure_fin' => 'sometimes|after:heure_fin',
+            'heure_fin' => 'sometimes|after:heure_deb',
             'date' => 'sometimes|date',
             'status' => 'sometimes|in:planifié,Terminé,annulé',
           

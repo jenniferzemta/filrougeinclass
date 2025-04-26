@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
-import Etudiants from './pages/Etudiants';
+import Etudiants from './pages/Etudash';
 import Sidebar from './components/layouts/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Test from './pages/Test';
@@ -12,6 +12,7 @@ import HomePage from './pages/public/HomePage';
 import Services from './pages/public/Services';
 import Radash from './pages/Radash';
 import EmploiDuTemps from './pages/RaDashboard';
+import Etudash from './pages/Etudash';
 // import RaDashboard from './pages/RaDashboard';
 
 
@@ -35,9 +36,12 @@ function App() {
           <Route path="/" element = {<Home/>} />
           <Route path="/home" element = {<Home/>} />
           <Route path="/services" element = {<Services/>} />
-
+        
           <Route path='/radash' element={
              <Radash />
+            }/>
+            <Route path='/etudash' element={
+             <Etudash />
            
         
             }/>

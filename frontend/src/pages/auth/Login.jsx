@@ -159,7 +159,7 @@ export default function Login() {
               navigate('/enseignant-dashboard');
               break;
             case 'Etudiant':
-              navigate('/etudiant-dashboard');
+              navigate('/etudash');
               break;
             default:
               navigate('/');
