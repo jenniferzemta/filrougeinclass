@@ -27,6 +27,7 @@ import DepartmentsContents from "../components/ra/DepartmentsContents"
 import SallesContent from "../components/ra/SallesContent" ;
 import MatieresContent from "../components/ra/MatieresContent";
 import CoursContent from "../components/ra/CoursContent";
+import EmploiDuTemps from "../components/ra/EmploiDuTemps";
 
 
 export default function Radash() {
@@ -231,7 +232,7 @@ export default function Radash() {
       case "courses":
         return <CoursContent />
       case "schedules":
-        return <SchedulesContent />
+        return <EmploiDuTemps />
       case "settings":
         return <SettingsContent />
       default:

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->string('entreprise', 100);
             $table->text('description');
             $table->text('competences');
-            $table->date('date_publication')->default(DB::raw('CURRENT_DATE'));
+            $table->date('date_publication');
             $table->enum('statut', ['actif', 'passif'])->default('actif');
             $table->string('rs_id'); // Responsable de stage
     

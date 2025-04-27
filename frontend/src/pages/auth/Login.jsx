@@ -153,7 +153,7 @@ export default function Login() {
               navigate('/radash');
               break;
             case 'rs':
-              navigate('/rs-dashboard');
+              navigate('/rsdash');
               break;
             case 'Enseignant':
               navigate('/enseignant-dashboard');

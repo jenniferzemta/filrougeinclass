@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
-import Etudiants from './pages/Etudash';
+//import Etudiants from './pages/Etudash';
 import Sidebar from './components/layouts/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Test from './pages/Test';
@@ -12,7 +12,8 @@ import HomePage from './pages/public/HomePage';
 import Services from './pages/public/Services';
 import Radash from './pages/Radash';
 import EmploiDuTemps from './pages/RaDashboard';
-import Etudash from './pages/Etudash';
+import RSDash from './dashboard/responsable-stage/Rsdash';
+//import Etudash from './pages/Etudash';
 // import RaDashboard from './pages/RaDashboard';
 
 
@@ -27,9 +28,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register/>} />
           <Route path="/sidebar" element = {<Sidebar/>} />
-          <Route path="/etudiants" element = {<Etudiants/>} />
+          {/* <Route path="/etudiants" element = {<Etudiants/>} /> */}
           <Route path="/dashboard" element = {<Dashboard/>} />
-          {/* <Route path="/radash" element={<RaDashboard/>} /> */}
+          <Route path="/rsdash" element={<RSDash/>} />
           <Route path="/test" element = {<Test/>} />
           <Route path="/contact" element = {<Contact/>} />
           <Route path="/about" element = {<About/>} />
@@ -40,11 +41,11 @@ function App() {
           <Route path='/radash' element={
              <Radash />
             }/>
-            <Route path='/etudash' element={
+            {/* <Route path='/etudash' element={
              <Etudash />
            
         
-            }/>
+            }/> */}
 
           <Route path='/em' element={<EmploiDuTemps/>}/>
         </Routes>

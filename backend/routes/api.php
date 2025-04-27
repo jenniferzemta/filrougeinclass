@@ -11,6 +11,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\RaController;
 use App\Models\User;
+use App\Http\Controllers\EmploiTempsController;
+use App\Http\Controllers\OffreStageController;
 
 Route::get('/user', function (Request $request) {
    
@@ -52,10 +54,17 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
     //cours
     Route::apiResource('cours', CoursController::class);
 
+    //emplodetemps
+    Route::apiResource('edt' , EmploiTempsController::class);
+    Route::get('edt/cours' , [EmploiTempsController::class, 'cours']);
     // routes/api.php
-Route::get('/users', function() {
-    return User::all();
-});
+    //recuperer tous les users
+    Route::get('/users', function() {
+        return User::all();
+    });
+    Route::apiResource('offres', OffreStageController::class);
+    //Route::get('mes-offres', [OffreStageController::class, 'mesOffres'])->middleware('auth:api');
+    Route::patch('offres/{id}/toggle-statut', [OffreStageController::class, 'toggleStatut']);
 // routes/api.php
    Route::middleware(['auth:sanctum'])->prefix('ra')->group(function () {
    
