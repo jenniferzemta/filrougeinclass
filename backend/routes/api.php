@@ -13,6 +13,7 @@ use App\Http\Controllers\RaController;
 use App\Models\User;
 use App\Http\Controllers\EmploiTempsController;
 use App\Http\Controllers\OffreStageController;
+use App\Http\Controllers\OffreController;
 
 Route::get('/user', function (Request $request) {
    
@@ -65,6 +66,10 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
     Route::apiResource('offres', OffreStageController::class);
     //Route::get('mes-offres', [OffreStageController::class, 'mesOffres'])->middleware('auth:api');
     Route::patch('offres/{id}/toggle-statut', [OffreStageController::class, 'toggleStatut']);
+
+    Route::apiResource('offre', OffreController::class);
+    Route::patch('offre/{id}/toggle-statut', [OffreController::class, 'toggleStatut']);
+
 // routes/api.php
    Route::middleware(['auth:sanctum'])->prefix('ra')->group(function () {
    

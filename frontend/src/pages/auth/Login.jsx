@@ -156,7 +156,7 @@ export default function Login() {
               navigate('/rsdash');
               break;
             case 'Enseignant':
-              navigate('/enseignant-dashboard');
+              navigate('/ensdash');
               break;
             case 'Etudiant':
               navigate('/etudash');

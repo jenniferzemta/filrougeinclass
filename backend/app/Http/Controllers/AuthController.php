@@ -14,39 +14,6 @@ use Illuminate\Validation\Rules;
 class AuthController extends Controller
 {
   // app/Http/Controllers/AuthController.php
-
-// public function register(Request $request)
-// {
-//     $request->validate([
-//         'name' => 'required|string|max:255',
-//         'email' => 'required|string|email|max:255|unique:users',
-//         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-//         'role' => 'required|in:RA,RS,Etudiant,Enseignant',
-//         'department_id' => 'required|exists:departments,id'
-//     ]);
-
-//     // Création de l'utilisateur
-//     $user = new User([
-      
-//         'name' => $request->name,
-//         'email' => $request->email,
-//         'password' => Hash::make($request->password),
-//         'role' => $request->role,
-//         'department_id' => $request->department_id
-//     ]);
-
-//     $user->save(); // Sauvegarde explicite
-
-//     // Création du token APRÈS la sauvegarde
-//     $token = $user->createToken('auth_token')->plainTextToken;
-
-//     return response()->json([
-//         'message' => 'Utilisateur créé avec succès',
-//         'user' => $user,
-//         'department' => $user->department,
-//         'token' => $token
-//     ], 201);
-// }
 public function register(Request $request)
 {
     // Déterminer les règles de validation en fonction du rôle
