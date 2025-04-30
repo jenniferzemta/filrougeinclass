@@ -11,8 +11,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\RaController;
 use App\Models\User;
+use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\EmploiTempsController;
 use App\Http\Controllers\OffreStageController;
+use App\Http\Controllers\EtudiantProfileController;
 use App\Http\Controllers\OffreController;
 
 Route::get('/user', function (Request $request) {
@@ -22,6 +24,13 @@ Route::get('/user', function (Request $request) {
     
 })->middleware('auth:sanctum');
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('etudiant/profile')->group(function () {
+        Route::get('/', [EtudiantProfileController::class, 'show']);
+        Route::put('/', [EtudiantProfileController::class, 'update']);
+    });
+});
+   
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -63,12 +72,19 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
     Route::get('/users', function() {
         return User::all();
     });
-    Route::apiResource('offres', OffreStageController::class);
-    //Route::get('mes-offres', [OffreStageController::class, 'mesOffres'])->middleware('auth:api');
-    Route::patch('offres/{id}/toggle-statut', [OffreStageController::class, 'toggleStatut']);
 
     Route::apiResource('offre', OffreController::class);
     Route::patch('offre/{id}/toggle-statut', [OffreController::class, 'toggleStatut']);
+
+    //etudiant
+    Route::get('/offres', [OffreController::class, 'activeStatut']);
+    Route::get('/offres/{id}/download', [OffreController::class, 'downloadImage']);
+    // Routes pour l'étudiant
+    Route::prefix('etudiant')->group(function () {
+    Route::get('/offres', [EtudiantController::class, 'index']);
+    Route::get('/offres/{id}/download', [EtudiantController::class, 'downloadImage']);
+   
+});
 
 // routes/api.php
    Route::middleware(['auth:sanctum'])->prefix('ra')->group(function () {

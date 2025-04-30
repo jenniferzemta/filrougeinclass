@@ -13,7 +13,7 @@ import Services from './pages/public/Services';
 import Radash from './pages/Radash';
 import EmploiDuTemps from './pages/RaDashboard';
 import RSDash from './dashboard/responsable-stage/Rsdash';
-//import Etudash from './pages/Etudash';
+import Etudash from './pages/Etudash';
 // import RaDashboard from './pages/RaDashboard';
 
 
@@ -41,11 +41,11 @@ function App() {
           <Route path='/radash' element={
              <Radash />
             }/>
-            {/* <Route path='/etudash' element={
+            {<Route path='/etudash' element={
              <Etudash />
            
         
-            }/> */}
+            }/> }
 
           <Route path='/em' element={<EmploiDuTemps/>}/>
         </Routes>

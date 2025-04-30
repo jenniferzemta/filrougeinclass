@@ -61,24 +61,29 @@ export const authService = {
 
 
 // login
-  async login(credentials) {
-    try {
-      const response = await axios.post(`${API_URL}/login`, credentials);
-      
-      // Stockez le token et les infos utilisateur
+async login(credentials) {
+  try {
+    const response = await api.post('/login', credentials); // Utilise l'instance api configurée
+    
+    // Stockage des informations
+    if (response.data.token) {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      
-      return {
-        success: true,
-        user: response.data.user,
-        token: response.data.token
-      };
-    } catch (error) {
-      throw this.handleError(error);
     }
-  },
+    
+    return {
+      success: true,
+      message: response.data.message,
+      user: response.data.user,
+      token: response.data.token,
+      department: response.data.department
+    };
+  } catch (error) {
+    throw this.handleError(error);
+  }
+},
 
+  
   getCurrentUser() {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;

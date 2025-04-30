@@ -38,7 +38,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
-
+  // app/Models/User.php
+    public function etudiant()
+    {
+        return $this->hasOne(Etudiant::class);
+    }
     // Vérifier le rôle
     public function isAdmin()
     {

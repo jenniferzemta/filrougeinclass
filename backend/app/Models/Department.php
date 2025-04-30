@@ -21,7 +21,7 @@ class Department extends Model
 //matiers 
     public function matieres()
     {
-        return $this->hasMany(Matiere::class);
+        return $this->hasMany(Matieres::class);
     }
 //salles
     public function salles()

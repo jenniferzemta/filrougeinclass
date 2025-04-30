@@ -505,7 +505,7 @@ export default function StageContent() {
               <img
                 src={`http://localhost:8000/storage/${offre.image_path}`}
                 alt={offre.titre}
-                className=" w-full h-96 object-center object-cover"
+                className=" w-full h-72 object-center object-cover"
               />
             )}
             <div className="p-4">

@@ -81,4 +81,28 @@ class OffreController extends Controller
         
         return response()->json($offre);
     }
+
+    public function activeStatut(Request $request)
+    {
+        $query = Offre::active();
+        
+        if ($request->has('last_checked')) {
+            $query->newSince($request->last_checked);
+        }
+        
+        return $query->get();
+    }
+
+    // Télécharger l'image
+    public function downloadImage($id)
+    {
+        $offre = Offre::findOrFail($id);
+        $path = storage_path('app/public/' . $offre->image_path);
+        
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->download($path);
+    }
 }

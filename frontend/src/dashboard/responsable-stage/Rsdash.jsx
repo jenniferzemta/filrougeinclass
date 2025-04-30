@@ -41,12 +41,8 @@ export default function RSDash() {
         <aside className={`fixed lg:static z-50 w-64 h-screen bg-[#0927EB] transition-all duration-300 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
           <div className="flex items-center justify-center h-16 px-4 bg-[#0927EB]/90">
             <div className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center mr-2">
-                <div className="w-5 h-5 rounded-full bg-[#FD6E47] flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-[#16A637]"></div>
-                </div>
-              </div>
-              <span className="text-white font-semibold text-lg">RS Dashboard</span>
+              
+             
             </div>
           </div>
 

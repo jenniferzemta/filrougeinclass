@@ -4,16 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Offre;
 
 class EtudiantController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Offre::active()->with('domaine');
         
+        if ($request->has('last_checked')) {
+            $query->newSince($request->last_checked);
+        }
+        
+        return $query->get();
+    }
+
+    // Télécharger l'image
+    public function downloadImage($id)
+    {
+        $offre = Offre::findOrFail($id);
+        $path = storage_path('app/public/' . $offre->image_path);
+        
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->download($path);
     }
 
     /**

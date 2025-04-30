@@ -4,30 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class Etudiant extends Model
 {
     //
-    use HasApiTokens,HasFactory,Notifiable;
-    protected $table = 'etudiant';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
-    public $timestamps = false;
-
+    use HasFactory;
     protected $fillable = [
-        'id',
-        'matricule',
-        'niveau',
+        'user_id',
+        'date_naissance',
+        'telephone',
+        'filiere',
+        'niveau_etude',
+        'photo',
+        'adresse'
     ];
 
-    /**
-     * Get the user that owns the Etudiant role.
-     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class);
+    }
+
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo ? asset('storage/'.$this->photo) : null;
     }
 }
