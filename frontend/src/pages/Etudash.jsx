@@ -19,7 +19,7 @@ import StageContent from "../components/etudiant/StageContent"
 import ProfileSettings from "../components/etudiant/ProfileSettings"
 import SupportContent from "../components/etudiant/SupportContent"
 import SchedulesContent from "../components/etudiant/ScheduleContent"
-
+import logo from './../assets/logo.png';
 export default function Etudash() {
   // États
   const [darkMode, setDarkMode] = useState(false)
@@ -108,9 +108,18 @@ export default function Etudash() {
       >
         {/* En-tête avec bouton fermer (mobile) */}
         <div className="p-4 flex justify-between items-center h-20 border-b border-white/20">
-          <h1 className="text-white text-xl font-bold">EtuDash</h1>
+         <div className="p-4 flex justify-center items-center h-24 border-opacity-20">
+                <div className="w-48 h-48 md:w-48 md:h-48 rounded-full flex items-center justify-center mt-5 overflow-hidden">
+                  <img 
+                    src={logo} 
+                    className="w-48 object-center object-contain " 
+                    alt="Logo" 
+                  />
+                </div>
+              </div>
+              <div className=" py-5 border-b border-white"></div>
           <button 
-            className="lg:hidden p-1 text-white/80 hover:text-white"
+            className="lg:hidden -m-2 text-white/80 hover:text-white"
             onClick={() => setSidebarOpen(false)}
           >
             <XMarkIcon className="h-6 w-6" />
@@ -118,7 +127,7 @@ export default function Etudash() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 flex flex-col px-4 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 flex flex-col px-4 py-8 space-y-2 overflow-y-auto">
           <SidebarItem
             icon={<HomeIcon className="h-5 w-5" />}
             text="Tableau de bord"

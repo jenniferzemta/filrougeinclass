@@ -1,17 +1,15 @@
-// Dans ton fichier auth.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api'; // Adapte selon ton URL
+const API_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
 });
 
-// Intercepteur pour ajouter le token automatiquement
+// Intercepteur pour le token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -21,9 +19,6 @@ api.interceptors.request.use((config) => {
 });
 
 export const etudiantService = {
-  /**
-   * Récupère le profil étudiant
-   */
   async getProfile() {
     try {
       const response = await api.get('/etudiant/profile');
@@ -36,35 +31,60 @@ export const etudiantService = {
       throw this.handleError(error);
     }
   },
-
-  /**
-   * Met à jour le profil étudiant
-   */
-  async updateProfile(profileData) {
+//update
+async updateProfile(profileData) {
     try {
-      // Pour les fichiers (comme la photo), utilise FormData
       const formData = new FormData();
-      for (const key in profileData) {
-        if (profileData[key] !== undefined && profileData[key] !== null) {
-          formData.append(key, profileData[key]);
-        }
+      
+      // Construction MANUELLE du FormData
+      formData.append('name', profileData.name || '');
+      formData.append('email', profileData.email || '');
+      formData.append('date_naissance', profileData.date_naissance || '');
+      formData.append('telephone', profileData.telephone || '');
+      formData.append('filiere', profileData.filiere || '');
+      formData.append('niveau_etude', profileData.niveau_etude || '');
+      formData.append('adresse', profileData.adresse || '');
+  
+      // Gestion spécifique de la photo
+      if (profileData.photo instanceof File) {
+        formData.append('photo', profileData.photo);
+      } else if (typeof profileData.photo === 'string') {
+        // Si c'est une URL (photo existante), ne rien envoyer
       }
-
+  
+      // DEBUG: Afficher le contenu de FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+  
       const response = await api.put('/etudiant/profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
+  
+      return {
+        success: true,
+        data: response.data,
+        message: response.data.message || 'Profil mis à jour'
+      };
+    } catch (error) {
+      console.error("Erreur détaillée:", error.response?.data || error);
+      throw this.handleError(error);
+    }
+  },
 
-      // Met à jour le localStorage si nécessaire
-      if (response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
+  async changePassword(passwordData) {
+    try {
+      // Correction des noms de champs pour correspondre au backend
+      const response = await api.post('/etudiant/profile', {
+        current_password: passwordData.current_password, // Avant: currentPassword
+        new_password: passwordData.new_password,       // Avant: newPassword
+        confirm_password: passwordData.confirm_password // Avant: confirmPassword
+      });
 
       return {
         success: true,
-        user: response.data.user,
-        etudiant: response.data.etudiant,
         message: response.data.message
       };
     } catch (error) {
@@ -72,14 +92,18 @@ export const etudiantService = {
     }
   },
 
-  /**
-   * Gère les erreurs API de manière cohérente
-   */
   handleError(error) {
     if (error.response?.data?.errors) {
       const errors = Object.values(error.response.data.errors).flat();
-      return { message: errors.join('\n'), errors: error.response.data.errors };
+      return { 
+        message: errors.join('\n'), 
+        errors: error.response.data.errors,
+        status: error.response.status 
+      };
     }
-    return { message: error.response?.data?.message || 'Une erreur est survenue' };
+    return { 
+      message: error.response?.data?.message || 'Une erreur est survenue',
+      status: error.response?.status 
+    };
   }
 };

@@ -147,8 +147,8 @@
 // }
 
 
-"use client"
 
+import logo from "./../../assets/logo.png"
 import { useState, useEffect } from "react"
 import {
   SunIcon,
@@ -204,37 +204,26 @@ export default function RSDash() {
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
         <aside
-          className={`fixed lg:static z-50 w-72 h-screen transition-all duration-300 transform ${
+          className={`fixed lg:static z-50 w-56 h-screen transition-all duration-300 transform ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           } bg-gradient-to-b from-[#0927EB] to-[#0927EB]/90 text-white shadow-xl`}
         >
           <div className="flex items-center justify-center h-16 px-4 border-b border-white/10">
-            <div className="flex items-center space-x-2">
-              <BriefcaseIcon className="h-8 w-8 text-white" />
-              <span className="text-xl font-bold">StageManager</span>
+           <div className="w-48 h-32 md:w-48 md:h-32 rounded-full flex items-center justify-center mt-8 overflow-hidden">
+               <img  src={logo}  className="w-48 object-center object-contain " alt="Logo"  />
             </div>
-          </div>
+             </div>
+            <div className=" py-7 border-b border-white"></div>
+         
 
           <div className="px-4 py-6">
-            <div className="bg-white/10 rounded-lg p-3 mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="bg-[#FD6E47] rounded-full p-2">
-                  <UserCircleIcon className="h-8 w-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-white">Responsable Stage</h3>
-                  <p className="text-xs text-white/70">Connecté</p>
-                </div>
-              </div>
-            </div>
+
 
             <nav className="space-y-1">
               <SidebarItem icon={<HomeIcon className="h-5 w-5" />} text="Tableau de bord" />
               <SidebarItem icon={<BriefcaseIcon className="h-5 w-5" />} text="Offres de stage" active />
-              <SidebarItem icon={<UsersIcon className="h-5 w-5" />} text="Étudiants" />
-              <SidebarItem icon={<ChartBarIcon className="h-5 w-5" />} text="Statistiques" />
               <SidebarItem icon={<CogIcon className="h-5 w-5" />} text="Paramètres" />
-              <SidebarItem icon={<QuestionMarkCircleIcon className="h-5 w-5" />} text="Aide & Support" />
+            
             </nav>
           </div>
 
@@ -305,13 +294,14 @@ export default function RSDash() {
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
             <StageContent searchTerm={searchTerm} />
+            
           </main>
 
           {/* Footer */}
           <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 px-6 transition-colors duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                © {new Date().getFullYear()} StageManager. Tous droits réservés.
+                © {new Date().getFullYear()} AKADEMIC. Tous droits réservés.
               </p>
               <div className="flex space-x-4 mt-2 sm:mt-0">
                 <a href="#" className="text-sm text-[#0927EB] dark:text-[#4d63e8] hover:underline">
