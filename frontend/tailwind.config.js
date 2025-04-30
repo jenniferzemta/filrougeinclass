@@ -1,14 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: ["class"],
+  darkMode: 'class', // Active le dark mode manuel
   content: [
-  "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-  "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  "*.{js,ts,jsx,tsx,mdx}"
+    "./src/**/*.{js,jsx,ts,tsx,html}",
+    //"./public/index.html"
   ],
   theme: {
-    extend: {},
+    extend: {
+      // colors: {
+      //   primary: '#0927EB', // Exemple : votre couleur bleue
+      //   secondary: '#FD6E47', // Exemple : votre couleur orange
+      // },
+    
+    },
   },
   plugins: [],
 }
