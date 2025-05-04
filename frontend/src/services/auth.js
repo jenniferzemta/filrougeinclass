@@ -128,4 +128,13 @@ export const getDepartments = async () => {
     throw new Error('Erreur lors de la récupération des départements');
   }
   return response.json();
+
+};
+// stats dashborad
+export default {
+  getStats: () => api.get('/stats'),
+  getUsers: (role, page = 1) => api.get(`/users?role=${role}&page=${page}`),
+  deleteUser: (id) => api.delete(`/users/${id}`),
+  login: (credentials) => api.post('/login', credentials)
+
 };

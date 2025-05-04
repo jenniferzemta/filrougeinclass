@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import Dashboard from '../../pages/Dashboard'
+import Dashboard from '../../pages/dashboardAdmin/Dashboard'
 
 function Layout({children}) {
   return (

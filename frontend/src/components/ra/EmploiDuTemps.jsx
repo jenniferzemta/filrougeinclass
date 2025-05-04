@@ -4,215 +4,327 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
+import { getSchedules, createSchedule, getCourses } from '../../services/edtService';
 import { 
-    getSchedules, 
-    createSchedule, 
-    updateSchedule, 
-    deleteSchedule,
-    getCourses
-} from '../../services/edtService';
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
+    Dialog, 
+    DialogTitle, 
+    DialogContent, 
+    DialogActions, 
     Button,
-    MenuItem,
-    Select,
-    FormControl,
-    InputLabel
+    Avatar,
+    Chip,
+    Divider
 } from '@mui/material';
+import { lightBlue, green, orange, purple } from '@mui/material/colors';
 
 const EmploiDuTemps = () => {
     const [events, setEvents] = useState([]);
     const [courses, setCourses] = useState([]);
     const [open, setOpen] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
-    const [formData, setFormData] = useState({
-        title: '',
-        start: '',
-        end: '',
-        cours_id: '',
-        metadata: {}
-    });
+    const [selectedSlot, setSelectedSlot] = useState(null);
+    const [selectedCourse, setSelectedCourse] = useState(null);
+
+    // Couleurs personnalisées comme Google Calendar
+    const eventColors = {
+        math: lightBlue[500],
+        physics: green[500],
+        chemistry: orange[500],
+        default: purple[500]
+    };
 
     useEffect(() => {
-        fetchData();
+        const loadData = async () => {
+            try {
+                const [schedules, courses] = await Promise.all([
+                    getSchedules(),
+                    getCourses()
+                ]);
+                setEvents(schedules);
+                setCourses(courses);
+            } catch (error) {
+                console.error("Erreur de chargement:", error);
+            }
+        };
+        loadData();
     }, []);
 
-    const fetchData = async () => {
-        try {
-            const [schedules, courses] = await Promise.all([
-                getSchedules(),
-                getCourses()
-            ]);
-            setEvents(schedules);
-            setCourses(courses);
-        } catch (error) {
-            console.error("Erreur de chargement des données", error);
-        }
-    };
-
     const handleDateSelect = (selectInfo) => {
-        setSelectedEvent(null);
-        setFormData({
-            title: '',
-            start: selectInfo.startStr,
-            end: selectInfo.endStr,
-            cours_id: '',
-            metadata: {}
+        setSelectedSlot({
+            start: selectInfo.start,
+            end: selectInfo.end
         });
         setOpen(true);
     };
 
-    const handleEventClick = (clickInfo) => {
-        setSelectedEvent(clickInfo.event);
-        setFormData({
-            title: clickInfo.event.title,
-            start: clickInfo.event.startStr,
-            end: clickInfo.event.endStr,
-            cours_id: clickInfo.event.extendedProps.cours_id,
-            metadata: clickInfo.event.extendedProps.metadata || {}
-        });
-        setOpen(true);
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+    const handleCourseSelect = (course) => {
+        setSelectedCourse(course);
     };
 
     const handleSubmit = async () => {
-        try {
-            if (selectedEvent) {
-                // Mise à jour
-                await updateSchedule(selectedEvent.id, formData);
-            } else {
-                // Création
-                await createSchedule(formData);
+        if (!selectedCourse || !selectedSlot) return;
+
+        const newEvent = {
+            title: `${selectedCourse.matiere.nom} - ${selectedCourse.salle.nom}`,
+            start: selectedSlot.start,
+            end: selectedSlot.end,
+            cours_id: selectedCourse.id,
+            extendedProps: {
+                cours: selectedCourse,
+                color: eventColors[selectedCourse.matiere.nom.toLowerCase()] || eventColors.default
             }
-            setOpen(false);
-            fetchData(); // Recharger les données
-        } catch (error) {
-            console.error("Erreur lors de la sauvegarde", error);
-        }
-    };
+        };
 
-    const handleDelete = async () => {
         try {
-            await deleteSchedule(selectedEvent.id);
+            const createdEvent = await createSchedule(newEvent);
+            setEvents([...events, createdEvent]);
             setOpen(false);
-            fetchData(); // Recharger les données
+            setSelectedCourse(null);
         } catch (error) {
-            console.error("Erreur lors de la suppression", error);
+            console.error("Erreur de création:", error);
         }
-    };
-
-    const eventContent = (eventInfo) => {
-        return (
-            <div>
-                <b>{eventInfo.timeText}</b>
-                <i>{eventInfo.event.title}</i>
-                {eventInfo.event.extendedProps.metadata?.salle && (
-                    <div>Salle: {eventInfo.event.extendedProps.metadata.salle}</div>
-                )}
-            </div>
-        );
     };
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '16px', height: 'calc(100vh - 80px)' }}>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay listWeek'
                 }}
-                locales={[frLocale]}
                 locale="fr"
-                editable={true}
+                events={events}
                 selectable={true}
                 selectMirror={true}
                 dayMaxEvents={true}
-                weekends={true}
                 nowIndicator={true}
-                events={events}
                 select={handleDateSelect}
-                eventClick={handleEventClick}
-                eventContent={eventContent}
-                height="80vh"
+                eventContent={EventContent}
+                height="100%"
+                eventDidMount={applyGoogleStyle}
             />
 
-            <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>
-                    {selectedEvent ? 'Modifier le cours' : 'Ajouter un nouveau cours'}
-                </DialogTitle>
-                <DialogContent>
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="cours-label">Cours</InputLabel>
-                        <Select
-                            labelId="cours-label"
-                            name="cours_id"
-                            value={formData.cours_id}
-                            onChange={handleInputChange}
-                            label="Cours"
-                        >
-                            {courses.map(course => (
-                                <MenuItem key={course.id} value={course.id}>
-                                    {course.matiere?.nom} - {course.enseignant?.nom}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        name="title"
-                        label="Titre"
-                        value={formData.title}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        name="start"
-                        label="Début"
-                        type="datetime-local"
-                        value={formData.start}
-                        onChange={handleInputChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        name="end"
-                        label="Fin"
-                        type="datetime-local"
-                        value={formData.end}
-                        onChange={handleInputChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    {selectedEvent && (
-                        <Button onClick={handleDelete} color="error">
-                            Supprimer
-                        </Button>
+            <Dialog 
+                open={open} 
+                onClose={() => setOpen(false)}
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogTitle style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    backgroundColor: '#f8f9fa',
+                    borderBottom: '1px solid #e0e0e0'
+                }}>
+                    <span style={{ color: '#5f6368' }}>Nouvel événement</span>
+                    {selectedCourse && (
+                        <Chip
+                            label={selectedCourse.matiere.nom}
+                            size="small"
+                            style={{ 
+                                backgroundColor: eventColors[selectedCourse.matiere.nom] || eventColors.default,
+                                color: 'white'
+                            }}
+                        />
                     )}
-                    <Button onClick={() => setOpen(false)}>Annuler</Button>
-                    <Button onClick={handleSubmit} color="primary">
-                        Sauvegarder
+                </DialogTitle>
+                
+                <DialogContent style={{ padding: '24px' }}>
+                    <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        gap: '16px',
+                        marginBottom: '24px'
+                    }}>
+                        {courses.map(course => (
+                            <CourseCard 
+                                key={course.id}
+                                course={course}
+                                isSelected={selectedCourse?.id === course.id}
+                                onSelect={handleCourseSelect}
+                                color={eventColors[course.matiere.nom] || eventColors.default}
+                            />
+                        ))}
+                    </div>
+
+                    <Divider style={{ margin: '16px 0' }} />
+
+                    {selectedCourse && (
+                        <div style={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: '16px',
+                            padding: '16px',
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: '8px'
+                        }}>
+                            <DetailItem 
+                                icon="📘" 
+                                label="Matière" 
+                                value={selectedCourse.matiere.nom} 
+                            />
+                            <DetailItem 
+                                icon="🏫" 
+                                label="Salle" 
+                                value={selectedCourse.salle.nom} 
+                            />
+                            <DetailItem 
+                                icon="👤" 
+                                label="Enseignant" 
+                                value={selectedCourse.enseignant.nom} 
+                            />
+                            <DetailItem 
+                                icon="🕒" 
+                                label="Durée" 
+                                value={`${formatTime(selectedSlot.start)} - ${formatTime(selectedSlot.end)}`} 
+                            />
+                        </div>
+                    )}
+                </DialogContent>
+                
+                <DialogActions style={{ padding: '16px 24px', borderTop: '1px solid #e0e0e0' }}>
+                    <Button 
+                        onClick={() => setOpen(false)}
+                        style={{ color: '#5f6368' }}
+                    >
+                        Annuler
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        style={{ 
+                            backgroundColor: '#1a73e8',
+                            color: 'white',
+                            borderRadius: '4px',
+                            padding: '8px 24px',
+                            '&:hover': {
+                                backgroundColor: '#1557b0'
+                            }
+                        }}
+                        disabled={!selectedCourse}
+                    >
+                        Enregistrer
                     </Button>
                 </DialogActions>
             </Dialog>
         </div>
     );
+};
+
+// Composants annexes
+const CourseCard = ({ course, isSelected, onSelect, color }) => (
+    <div 
+        onClick={() => onSelect(course)}
+        style={{
+            border: `2px solid ${isSelected ? color : '#e0e0e0'}`,
+            borderRadius: '8px',
+            padding: '16px',
+            cursor: 'pointer',
+            backgroundColor: isSelected ? `${color}10` : 'white',
+            transition: 'all 0.2s',
+            position: 'relative',
+            overflow: 'hidden'
+        }}
+    >
+        <div style={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: '4px',
+            width: '100%',
+            backgroundColor: color
+        }} />
+        <h4 style={{ margin: '0 0 8px 0', color: '#202124' }}>
+            {course.matiere.nom}
+        </h4>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Avatar style={{ 
+                width: 28, 
+                height: 28, 
+                fontSize: '0.8rem',
+                backgroundColor: `${color}20`,
+                color: color
+            }}>
+                {course.enseignant.nom[0]}
+            </Avatar>
+            <span style={{ fontSize: '0.9rem', color: '#5f6368' }}>
+                {course.enseignant.nom}
+            </span>
+        </div>
+        <div style={{ 
+            marginTop: '8px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px',
+            color: '#5f6368'
+        }}>
+            <span>🏫</span>
+            <span>{course.salle.nom}</span>
+        </div>
+    </div>
+);
+
+const DetailItem = ({ icon, label, value }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ fontSize: '1.2rem' }}>{icon}</span>
+        <div>
+            <div style={{ fontSize: '0.8rem', color: '#5f6368' }}>{label}</div>
+            <div style={{ fontWeight: 500, color: '#202124' }}>{value}</div>
+        </div>
+    </div>
+);
+
+const EventContent = ({ event }) => {
+    const cours = event.extendedProps.cours;
+    return (
+        <div style={{ 
+            padding: '8px',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+        }}>
+            <div style={{ 
+                fontWeight: 500, 
+                fontSize: '0.9rem',
+                lineHeight: '1.2',
+                color: '#ffffff'
+            }}>
+                {cours.matiere.nom}
+            </div>
+            <div style={{ 
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end'
+            }}>
+                <span style={{ fontSize: '0.8rem', color: '#ffffffcc' }}>
+                    {event.timeText}
+                </span>
+                <span style={{ fontSize: '0.8rem', color: '#ffffffcc' }}>
+                    {cours.salle.nom}
+                </span>
+            </div>
+        </div>
+    );
+};
+
+// Styles spécifiques Google Calendar
+const applyGoogleStyle = (info) => {
+    info.el.style.borderRadius = '4px';
+    info.el.style.border = 'none';
+    info.el.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+    info.el.style.margin = '2px 4px';
+};
+
+// Formatage des heures
+const formatTime = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
 };
 
 export default EmploiDuTemps;

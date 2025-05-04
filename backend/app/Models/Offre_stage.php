@@ -20,6 +20,5 @@ class Offre_stage extends Model
     'rs_id'
 
   ];
-  
-           
+    
 }

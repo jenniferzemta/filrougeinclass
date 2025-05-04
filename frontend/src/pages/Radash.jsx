@@ -147,12 +147,6 @@ export default function Radash() {
           active={activeSection === "dashboard"}
           onClick={() => setActiveSection("dashboard")}
         />
-        {/* <SidebarItem
-          icon={<UsersIcon className="h-5 w-5 md:h-6 md:w-6" />}
-          text="Départements"
-          active={activeSection === "departments"}
-          onClick={() => setActiveSection("departments")}
-        /> */}
           <SidebarItem
           icon={<UsersIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Départements"

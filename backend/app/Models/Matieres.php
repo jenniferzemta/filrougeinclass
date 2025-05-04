@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Department;
-use APP\Models\Salle;
+use App\Models\Salle;
+use App\Models\Supports;
 
 class Matieres extends Model
 {
@@ -38,4 +39,12 @@ class Matieres extends Model
         return $this->belongsToMany(Salle::class, 'salle_matiere');
     }
   
+    public function cours(){
+        return $this->hasMany(Cours::class); 
+    }
+
+      //support
+  public function supports() {
+    return $this->hasMany(Supports::class);
+}  
 }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Cours;
+use App\Models\Matieres;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +13,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthController extends Controller
 {
@@ -22,45 +26,15 @@ public function register(Request $request)
         'prenom' => 'required|string|max:255',
         'email' => 'required|string|email|max:255|unique:users',
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'role' => 'required|in:ra,rs,Etudiant,Enseignant',
+        'role' => 'required|in:ra,rs,Etudiant,Enseignant,Admin',
         'department_id' => 'required|exists:departments,id'
     ];
 
-    // // Ajouter les règles conditionnelles
-    // if (in_array($request->role, ['ra', 'rs'])) {
-    //     $rules['numeroBadge'] = 'required|string|unique:users,numero_badge';
-    // } elseif ($request->role === 'Enseignant') {
-    //     $rules['matriculeEnseignant'] = 'required|string|unique:users,matricule';
-    // } elseif ($request->role === 'Etudiant') {
-    //     $rules['matriculeEtudiant'] = 'required|string|unique:users,matricule';
-    // }
-
-    // $validatedData = $request->validate($rules);
-
-    // // Préparer les données pour la création de l'utilisateur
-    // $userData = [
-    //     'name' => $validatedData['name'],
-    //     'email' => $validatedData['email'],
-    //     'password' => Hash::make($validatedData['password']),
-    //     'role' => $validatedData['role'],
-    //     'department_id' => $request->department_id,
-    // ];
-
-    // // Ajouter les champs spécifiques au rôle
-    // if (in_array($validatedData['role'], ['ra', 'rs'])) {
-    //     $userData['numero_badge'] = $validatedData['numeroBadge'];
-    // } else {
-    //     $userData['matricule'] = $validatedData['role'] === 'Enseignant' 
-    //         ? $validatedData['matriculeEnseignant'] 
-    //         : $validatedData['matriculeEtudiant'];
-    // }
-
-    // // Création de l'utilisateur
-    // $user = User::create($userData);
  // Règles conditionnelles
  if ($request->role === 'ra' || $request->role === 'rs') {
     $rules['numero_badge'] = 'required|string|unique:users,numero_badge';
-} else {
+} else 
+if  ($request->role === 'Etudiant' || $request->role === 'Enseignant'){
     $rules['matricule'] = 'required|string|unique:users,matricule';
 }
 
@@ -120,6 +94,7 @@ $user = User::create($userData);
         ]);
     }
 
+    
     public function user(Request $request)
     {
         return response()->json([
@@ -128,77 +103,106 @@ $user = User::create($userData);
         ]);
     }
 
+// statistiques 
 
-
-
-
-public function sendResetLink(Request $request)
+public function getStats()
 {
-    $request->validate(['email' => 'required|email']);
+    $stats = [
+        'etudiants' => User::where('role', 'Etudiant')->count(),
+        'enseignants' => User::where('role', 'Enseignant')->count(),
+        'ra' => User::where('role', 'ra')->count(),
+        'rs' => User::where('role', 'rs')->count(),
+        'departments' => Department::count(),
+        'courses' => Cours::count(),
+        'matieres'=> Matieres::count(),
+    ];
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
-
-    return $status === Password::RESET_LINK_SENT
-        ? response()->json(['message' => __($status)])
-        : response()->json(['error' => __($status)], 400);
+    return response()->json($stats);
 }
 
-public function resetPassword(Request $request)
+public function getUsers(Request $request)
 {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ]);
+    $users = User::with('department')
+        ->when($request->role, fn($q, $role) => $q->where('role', $role))
+        ->paginate(10);
 
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->forceFill([
-                'password' => Hash::make($password)
-            ])->setRememberToken(Str::random(60));
+    return response()->json($users);
+}
 
-            $user->save();
+public function deleteUser(User $user)
+{
+    $user->delete();
+    return response()->json(['message' => 'Utilisateur supprimé']);
+}
 
-            event(new PasswordReset($user));
+// Récupérer les utilisateurs par rôle
+public function getUsersByRole($role)
+{
+    $validRoles = ['ra', 'rs', 'Enseignant', 'Etudiant'];
+    
+    if (!in_array($role, $validRoles)) {
+        return response()->json(['error' => 'Rôle invalide'], 400);
+    }
+
+    $users = User::with('department')
+                ->where('role', $role)
+                ->paginate(10);
+
+    return response()->json($users);
+}
+
+// Mettre à jour un utilisateur
+public function updateUser(Request $request, $id)
+{
+    try {
+        $user = User::findOrFail($id);
+        
+        // Le reste de votre logique existante...
+        if ($user->role === 'Admin' && !$request->user()->isAdmin()) {
+            return response()->json(['error' => 'Action non autorisée'], 403);
         }
-    );
+        $validated = $request->validate([
+            'nom' => 'sometimes|string|max:255',
+            'prenom' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,'.$user->id,
+            'role' => 'sometimes|in:ra,rs,Etudiant,Enseignant,Admin',
+            'department_id' => 'sometimes|exists:departments,id',
+            'matricule' => 'sometimes|required_if:role,Etudiant,Enseignant|unique:users,matricule,'.$user->id,
+            'numero_badge' => 'sometimes|required_if:role,ra,rs|unique:users,numero_badge,'.$user->id
+        ]);
+    
+        // Mise à jour conditionnelle des champs
+        if (isset($validated['nom']) || isset($validated['prenom'])) {
+            $validated['name'] = $validated['nom'] . ' ' . $validated['prenom'];
+        }
+    
+        // Réinitialiser les champs si le rôle change
+        if ($request->has('role') && $request->role !== $user->role) {
+            $validated['matricule'] = $request->role === 'Etudiant' || $request->role === 'Enseignant' 
+                ? $validated['matricule'] 
+                : null;
+            
+            $validated['numero_badge'] = $request->role === 'ra' || $request->role === 'rs' 
+                ? $validated['numero_badge'] 
+                : null;
+        }
+    
+        $user->update($validated);
+    
+        return response()->json([
+            'message' => 'Utilisateur mis à jour avec succès',
+            'user' => $user->fresh()
+        ]);
+        // Validation et mise à jour...
 
-    return $status === Password::PASSWORD_RESET
-        ? response()->json(['message' => __($status)])
-        : response()->json(['error' => __($status)], 400);
+    } catch (ModelNotFoundException $e) {
+        return response()->json([
+            'error' => 'Utilisateur non trouvé'
+        ], 404);
+    }
 }
 
 
-    public function verifyEmail(Request $request)
-{
-    if (!hash_equals((string) $request->route('id'), (string) $request->user()->getKey())) {
-        return response()->json(['message' => 'URL invalide'], 403);
-    }
 
-    if (!hash_equals((string) $request->route('hash'), sha1($request->user()->getEmailForVerification()))) {
-        return response()->json(['message' => 'URL invalide'], 403);
-    }
 
-    if ($request->user()->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email déjà vérifié']);
-    }
-
-    $request->user()->markEmailAsVerified();
-
-    return response()->json(['message' => 'Email vérifié avec succès']);
-}
-
-public function resendVerification(Request $request)
-{
-    if ($request->user()->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email déjà vérifié']);
-    }
-
-    $request->user()->sendEmailVerificationNotification();
-
-    return response()->json(['message' => 'Lien de vérification envoyé']);
-}
 }

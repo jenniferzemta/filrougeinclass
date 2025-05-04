@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\CustomResetPassword;
 
 class User extends Authenticatable
 {
@@ -43,12 +44,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Etudiant::class);
     }
-    // Vérifier le rôle
-    public function isAdmin()
-    {
-        return $this->role === 'RA';
-    }
-
+   
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -64,6 +60,12 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+     // app/Models/User.php
+public function sendPasswordResetNotification($token)
+{
+    $this->notify(new CustomResetPassword($token));
+}
     protected function casts(): array
     {
         return [

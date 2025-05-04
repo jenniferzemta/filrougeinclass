@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Salle extends Model
 {
     //
@@ -28,9 +29,13 @@ public function seances() {
 
 public function matieres()
     {
-        return $this->belongsToMany(Matiere::class, 'salle_matiere');
+        return $this->belongsToMany(Matieres::class, 'salle_matiere');
     }
 
+    public function cours()
+    {
+        return $this->hasMany(Cours::class);
+    }
 // public function matieres()
 // {
 //     return $this->belongsToMany(Matiere::class, 'salle_matiere');

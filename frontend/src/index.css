@@ -1,5 +1,3 @@
-
-
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 /* Tailwind directives */
@@ -36,6 +34,50 @@ body {
 
 .font-open {
   font-family: 'Open Sans', sans-serif;
+}
+/* Style général Google-like */
+.fc {
+  --fc-border-color: #e0e0e0;
+  --fc-today-bg-color: #f8f9fa;
+  --fc-page-bg-color: white;
+  --fc-neutral-bg-color: white;
+  --fc-list-event-hover-bg-color: #f8f9fa;
+}
+
+.fc-header-toolbar {
+  padding: 16px 24px;
+  margin-bottom: 0 !important;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.fc-toolbar-title {
+  font-size: 1.375rem !important;
+  color: #3c4043;
+  font-weight: 500;
+}
+
+.fc-button {
+  border: 1px solid #dadce0 !important;
+  background: white !important;
+  color: #3c4043 !important;
+  text-transform: none !important;
+  border-radius: 4px !important;
+  padding: 6px 12px !important;
+  transition: all 0.2s;
+}
+
+.fc-button:hover {
+  background: #f8f9fa !important;
+}
+
+.fc-daygrid-day {
+  border-right: 1px solid #e0e0e0 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.fc-timegrid-slots td {
+  border-right: 1px solid #e0e0e0 !important;
 }
 
 @layer utilities {

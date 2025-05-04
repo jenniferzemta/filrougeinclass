@@ -1,5 +1,4 @@
-
-import logo from "./../../assets/logo.png"
+import logo from "./../assets/logo.png"
 import { useState, useEffect } from "react"
 import {
   SunIcon,
@@ -7,25 +6,20 @@ import {
   UserCircleIcon,
   BellIcon,
   MagnifyingGlassIcon,
-  BriefcaseIcon,
+  BookOpenIcon,
   ArrowLeftOnRectangleIcon,
   Bars3Icon,
   HomeIcon,
-  UsersIcon,
   ChartBarIcon,
   CogIcon,
-  QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline"
-import StageContent from "./StageContent"
-
-export default function RSDash() {
+import SupportProfContent from "../components/enseignant/SupportProfContent"
+export default function EnseignantDash() {
   const [darkMode, setDarkMode] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Dark mode management
   useEffect(() => {
-    // Check system preference on initial load
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
     setDarkMode(localStorage.getItem("darkMode") === "true" || prefersDark)
 
@@ -44,7 +38,6 @@ export default function RSDash() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      {/* Sidebar Mobile Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 lg:hidden z-40 backdrop-blur-sm transition-all duration-300"
@@ -53,28 +46,23 @@ export default function RSDash() {
       )}
 
       <div className="flex h-screen overflow-hidden">
-        {/* Sidebar */}
         <aside
           className={`fixed lg:static z-50 w-56 h-screen transition-all duration-300 transform ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           } bg-gradient-to-b from-[#0927EB] to-[#0927EB]/90 text-white shadow-xl`}
         >
           <div className="flex items-center justify-center h-16 px-4 border-b border-white/10">
-           <div className="w-48 h-32 md:w-48 md:h-32 rounded-full flex items-center justify-center mt-8 overflow-hidden">
-               <img  src={logo}  className="w-48 object-center object-contain " alt="Logo"  />
+            <div className="w-48 h-32 md:w-48 md:h-32 rounded-full flex items-center justify-center mt-8 overflow-hidden">
+              <img src={logo} className="w-48 object-center object-contain" alt="Logo" />
             </div>
-             </div>
-            <div className=" py-7 border-b border-white"></div>
-         
+          </div>
+          <div className=" py-7 border-b border-white"></div>
 
           <div className="px-4 py-6">
-
-
             <nav className="space-y-1">
               <SidebarItem icon={<HomeIcon className="h-5 w-5" />} text="Tableau de bord" />
-              <SidebarItem icon={<BriefcaseIcon className="h-5 w-5" />} text="Offres de stage" active />
+              <SidebarItem icon={<BookOpenIcon className="h-5 w-5" />} text="Supports de cours" active />
               <SidebarItem icon={<CogIcon className="h-5 w-5" />} text="Paramètres" />
-            
             </nav>
           </div>
 
@@ -83,13 +71,10 @@ export default function RSDash() {
           </div>
         </aside>
 
-        {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Top Navigation */}
           <header className="bg-white dark:bg-gray-800 shadow-sm z-10 transition-colors duration-300">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
-                {/* Mobile menu button */}
                 <button
                   className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0927EB] transition-all"
                   onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -97,7 +82,6 @@ export default function RSDash() {
                   <Bars3Icon className="h-6 w-6" />
                 </button>
 
-                {/* Search */}
                 <div className="flex-1 max-w-md px-2 mx-2 sm:px-4 sm:mx-4">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -105,7 +89,7 @@ export default function RSDash() {
                     </div>
                     <input
                       type="text"
-                      placeholder="Rechercher une offre..."
+                      placeholder="Rechercher un support..."
                       className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0927EB] focus:border-transparent transition-colors duration-200"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -113,20 +97,15 @@ export default function RSDash() {
                   </div>
                 </div>
 
-                {/* Right buttons */}
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <button
                     onClick={toggleDarkMode}
                     className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0927EB]"
-                    aria-label="Toggle dark mode"
                   >
                     {darkMode ? <SunIcon className="h-6 w-6 text-[#FD6E47]" /> : <MoonIcon className="h-6 w-6" />}
                   </button>
 
-                  <button
-                    className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0927EB] relative"
-                    aria-label="Notifications"
-                  >
+                  <button className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0927EB] relative">
                     <BellIcon className="h-6 w-6" />
                     <span className="absolute top-1 right-1 h-3 w-3 bg-[#FD6E47] rounded-full border-2 border-white dark:border-gray-800"></span>
                   </button>
@@ -135,20 +114,17 @@ export default function RSDash() {
                     <div className="bg-[#0927EB] rounded-full p-1">
                       <UserCircleIcon className="h-6 w-6 text-white" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Responsable Stage</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Professeur</span>
                   </div>
                 </div>
               </div>
             </div>
           </header>
 
-          {/* Main Content */}
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <StageContent searchTerm={searchTerm} />
-            
+            <SupportProfContent searchTerm={searchTerm} />
           </main>
 
-          {/* Footer */}
           <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 px-6 transition-colors duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">

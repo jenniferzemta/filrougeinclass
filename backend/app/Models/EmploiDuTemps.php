@@ -27,4 +27,6 @@ class EmploiDuTemps extends Model
     {
         return $this->belongsTo(Cours::class);
     }
+
+    
 }

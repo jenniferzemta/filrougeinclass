@@ -37,4 +37,8 @@ class Cours extends Model
     {
         return $this->belongsTo(User::class, 'enseignant_id') ->where('role', 'enseignant');;
     }
+    public function emplois()
+    {
+        return $this->hasMany(EmploiDuTemps::class);
+    }
 }

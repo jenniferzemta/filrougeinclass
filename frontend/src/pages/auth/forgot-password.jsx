@@ -1,10 +1,9 @@
-"use client"
-
 import { useState } from "react"
 import { motion } from "framer-motion"
 import {Link} from "react-router-dom"
-import Footer from "../../components/layouts/Footer"
-import Navbar from "../../components/layouts/Navbar"
+
+import axios from "axios"
+
 
 
 export default function ForgotPassword() {
@@ -12,27 +11,57 @@ export default function ForgotPassword() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState("")
+  
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault()
+  //   setError("")
+  //   setIsLoading(true)
+
+  //   // Simulate password reset request
+  //   setTimeout(() => {
+  //     setIsLoading(false)
+  //     if (email) {
+  //       setIsSubmitted(true)
+  //     } else {
+  //       setError("Veuillez entrer une adresse email valide.")
+  //     }
+  //   }, 1500)
+  // }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
     setIsLoading(true)
 
-    // Simulate password reset request
-    setTimeout(() => {
-      setIsLoading(false)
-      if (email) {
-        setIsSubmitted(true)
-      } else {
-        setError("Veuillez entrer une adresse email valide.")
-      }
-    }, 1500)
-  }
+    try {
+      // Récupération du cookie CSRF
+      await axios.get('/sanctum/csrf-cookie')
 
+      // Envoi de la requête à l'API
+      const response = await axios.post('http://localhost:8000/api/forgot-password', { email })
+
+      if (response.status === 200) {
+        setIsSubmitted(true)
+      }
+    } catch (error) {
+      if (error.response) {
+        // Gestion des erreurs de validation
+        if (error.response.data.errors?.email) {
+          setError(error.response.data.errors.email[0])
+        } else {
+          setError("Une erreur s'est produite. Veuillez réessayer.")
+        }
+      } else {
+        setError("Problème de connexion au serveur")
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      <Navbar />
-
+  
       <div className="flex min-h-[calc(100vh-64px)] flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center">
@@ -164,7 +193,6 @@ export default function ForgotPassword() {
         </div>
       </div>
 
-      <Footer />
     </div>
   )
 }

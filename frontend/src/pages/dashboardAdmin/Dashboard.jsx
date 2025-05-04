@@ -6,8 +6,9 @@ import {
   ChartBarIcon, Bars3Icon, XMarkIcon 
 } from '@heroicons/react/24/outline';
 import { Chart, BarController, CategoryScale, LinearScale, BarElement, Tooltip } from 'chart.js';
-import logo from './../assets/logo.png';
-import Sidebar from '../components/layouts/Sidebar';
+import logo from './../../assets/logo.png';
+import axios from '../../services/dash/api';
+import Sidebar from '../../components/layouts/Sidebar';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Tooltip);
 
@@ -17,16 +18,82 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState(null);
+  const [realStats, setRealStats] = useState([]);
+  const [loadingStats, setLoadingStats] = useState(true);
 
-  // Données mock
-  const stats = [
-    { id: 1, name: 'Étudiants', value: '1,248', icon: AcademicCapIcon, change: '+12%', color: 'bg-orange-100 text-orange-600' },
-    { id: 2, name: 'RA', value: '24', icon: UsersIcon, change: '+2', color: 'bg-green-100 text-green-600' },
-    { id: 3, name: 'RS', value: '18', icon: BriefcaseIcon, change: '+3', color: 'bg-blue-100 text-blue-600' },
-    { id: 4, name: 'Professeurs', value: '94', icon: UsersIcon, change: '+5%', color: 'bg-purple-100 text-purple-600' },
-    { id: 5, name: 'Salles', value: '42', icon: BuildingOffice2Icon, change: '', color: 'bg-yellow-100 text-yellow-600' },
-    { id: 6, name: 'EDT Actifs', value: '36', icon: CalendarIcon, change: '+4', color: 'bg-red-100 text-red-600' },
-  ];
+  // Récupération des vraies données
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:8000/api/admin/stats', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const apiStats = response.data;
+        
+        // Mapping des données API vers votre structure existante
+        const mappedStats = [
+          { 
+            id: 1, 
+            name: 'Étudiants', 
+            value: apiStats.etudiants.toLocaleString(), 
+            icon: AcademicCapIcon, 
+            change: '', 
+            color: 'bg-orange-100 text-orange-600' 
+          },
+          { 
+            id: 2, 
+            name: 'RA', 
+            value: apiStats.ra.toString(), 
+            icon: UsersIcon, 
+            change: '', 
+            color: 'bg-green-100 text-green-600' 
+          },
+          { 
+            id: 3, 
+            name: 'RS', 
+            value: apiStats.rs.toString(), 
+            icon: BriefcaseIcon, 
+            change: '', 
+            color: 'bg-blue-100 text-blue-600' 
+          },
+          { 
+            id: 4, 
+            name: 'Professeurs', 
+            value: apiStats.enseignants.toLocaleString(), 
+            icon: UsersIcon, 
+            change: '', 
+            color: 'bg-purple-100 text-purple-600' 
+          },
+          { 
+            id: 5, 
+            name: 'Départements', 
+            value: apiStats.departments.toString(), 
+            icon: BuildingOffice2Icon, 
+            change: '', 
+            color: 'bg-yellow-100 text-yellow-600' 
+          },
+          { 
+            id: 6, 
+            name: 'Matières', 
+            value: apiStats.courses.toLocaleString(), 
+            icon: CalendarIcon, 
+            change: '', 
+            color: 'bg-red-100 text-red-600' 
+          },
+        ];
+
+        setRealStats(mappedStats);
+        setLoadingStats(false);
+      } catch (error) {
+        console.error('Erreur de chargement des stats:', error);
+        setLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const courses = [
     { id: 1, name: 'Algorithmique Avancée', department: 'Informatique', credits: 4 },
@@ -164,9 +231,26 @@ const Dashboard = () => {
         <main className="px-4 sm:px-6 lg:px-8 py-6">
           {/* Cartes statistiques */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-            {stats.map((stat) => (
-              <div 
-                key={stat.id} 
+        {loadingStats ? (
+          // Loading state
+          Array(6).fill(0).map((_, index) => (
+            <div 
+              key={index} 
+              className={`rounded-lg p-4 shadow animate-pulse ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+            >
+              <div className="flex items-center">
+                <div className="h-6 w-6 rounded-full bg-gray-300" />
+                <div className="ml-4 space-y-2">
+                  <div className="h-4 bg-gray-300 rounded w-3/4" />
+                  <div className="h-6 bg-gray-300 rounded w-1/2" />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          realStats.map((stat) => (
+            <div 
+              key={stat.id} 
                 className={`rounded-lg p-4 shadow ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
               >
                 <div className="flex items-center">
@@ -188,9 +272,11 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
-
+          
+          
           {/* Bannière de bienvenue */}
           <div className={`rounded-lg p-6 mb-8 bg-gradient-to-r from-blue-600 to-blue-800 text-white`}>
             <h2 className="text-2xl font-bold mb-2">Bienvenue sur EduManager</h2>

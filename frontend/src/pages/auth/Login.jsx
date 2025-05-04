@@ -28,6 +28,9 @@ export default function Login() {
         
         // Redirection en fonction du rôle
         switch(result.user.role.toLowerCase()) { // .toLowerCase() pour plus de robustesse
+          case 'admin':
+            navigate('/dashboard');
+            break;
           case 'ra':
             navigate('/radash');
             break;
@@ -35,7 +38,7 @@ export default function Login() {
             navigate('/rsdash');
             break;
           case 'enseignant':
-            navigate('/ensdash');
+            navigate('/enseignant');
             break;
           case 'etudiant':
             navigate('/etudash');
