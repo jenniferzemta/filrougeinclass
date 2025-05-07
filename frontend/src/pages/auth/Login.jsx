@@ -25,7 +25,7 @@ export default function Login() {
         console.log('Token:', result.token);
         console.log('Utilisateur:', result.user);
         console.log('Département:', result.department);
-        
+        window.confirm("connection Reussie");
         // Redirection en fonction du rôle
         switch(result.user.role.toLowerCase()) { // .toLowerCase() pour plus de robustesse
           case 'admin':

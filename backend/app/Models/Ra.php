@@ -4,29 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class Ra extends Model
 {
     //
-    use HasApiTokens,HasFactory,Notifiable;
-    protected $table = 'ra';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
-    public $timestamps = false;
+    use HasFactory;
 
     protected $fillable = [
-        'id',
-        'numero_badge',
+        'user_id',
+        'telephone',
+        'specialite',
+        'grade',
+        'adresse',
+        'date_naissance',
+        'bureau',
+        'photo'
     ];
 
-    /**
-     * Get the user that owns the Etudiant role.
-     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class);
     }
 }

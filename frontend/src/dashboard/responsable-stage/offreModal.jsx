@@ -66,7 +66,7 @@ export default function OffreModal({ isOpen, onClose, onSave, offre, actionType 
 
         <form onSubmit={handleSubmit} className="p-4">
           <div className="mb-4">
-            <label className="block mb-2 font-medium">Titre *</label>
+            <label className="block mb-2 font-medium">Titre </label>
             <input
               type="text"
               name="titre"

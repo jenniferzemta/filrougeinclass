@@ -11,7 +11,6 @@ class Etudiant extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'date_naissance',
         'telephone',
         'filiere',
         'niveau_etude',

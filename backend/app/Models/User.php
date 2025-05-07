@@ -34,7 +34,10 @@ class User extends Authenticatable
         'department_id'
     ];
 
-
+    public function ra()
+    {
+        return $this->hasOne(Ra::class);
+    }
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -42,8 +45,12 @@ class User extends Authenticatable
   // app/Models/User.php
     public function etudiant()
     {
-        return $this->hasOne(Etudiant::class);
+        return $this->hasOne(Etudiant::class, 'user_id');
     }
+   
+    // app/Models/User.php
+
+    // Ajoutez la relation
    
     /**
      * The attributes that should be hidden for serialization.

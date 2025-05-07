@@ -94,6 +94,7 @@ export default function Register() {
 
           if (result.user) {
             toast.success(result.message || 'Inscription réussie !');
+            window.confirm("Inscription reussie");
             console.log('Utilisateur créé:', result.user);
           toast.success('Inscription réussie!');
           navigate('/login'); 

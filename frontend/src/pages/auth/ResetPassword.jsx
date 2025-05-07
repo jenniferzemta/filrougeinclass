@@ -1,8 +1,19 @@
-"use client"
 import { useState, useEffect } from "react"
-import { useSearchParams, useNavigate } from "react-router-dom"
+import { useSearchParams, useNavigate, Link } from "react-router-dom"
 import axios from "axios"
 import { motion } from "framer-motion"
+
+// Configuration d'animation commune
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+}
+
+const formItemVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0 }
+}
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams()
@@ -13,7 +24,6 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState("")
   const navigate = useNavigate()
 
-  // Vérification des paramètres URL
   useEffect(() => {
     if (!searchParams.get('token') || !searchParams.get('email')) {
       navigate('/forgot-password')
@@ -26,18 +36,20 @@ export default function ResetPassword() {
     setIsLoading(true)
 
     try {
-    console.log({
-            token: searchParams.get('token'), // Doit être identique à la DB
-            email: searchParams.get('email')
-    })
-      // Étape 1 : Récupérer le cookie CSRF
-      await axios.get('http://localhost:8000/sanctum/csrf-cookie')
-      console.log({
+        console.log({
+         token: searchParams.get('token'), // Doit être identique à la DB
+         email: searchParams.get('email') //Utilisation de encodeURIComponent() pour les valeurs token et email afin d'éviter les erreurs de parsing :
+                })
+        // Étape 1 : Récupérer le cookie CSRF
+        await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+        console.log({
         token: searchParams.get('token'), // Doit être identique à la DB
         email: searchParams.get('email')  // Doit correspondre à l'utilisateur
-      })
-      
+        })
+                  
       // Étape 2 : Envoyer la requête de réinitialisation
+                  
+      await axios.get('http://localhost:8000/sanctum/csrf-cookie')
       const response = await axios.post('http://localhost:8000/api/reset-password', {
         token: searchParams.get('token'),
         email: searchParams.get('email'),
@@ -61,70 +73,137 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <motion.div
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageVariants}
+      className="min-h-screen bg-gradient-to-br font-open from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300"
+    >
+      <div className="flex min-h-screen flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
-            Réinitialiser votre mot de passe
-          </h2>
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            className="flex justify-center"
+          >
+            <div className="w-20 h-20 rounded-2xl bg-[#0927EB] dark:bg-blue-800 flex items-center justify-center shadow-lg">
+              <svg
+                className="h-10 w-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+          </motion.div>
+
+          <motion.h2
+            variants={formItemVariants}
+            className="mt-8 text-center text-xl font-extrabold text-gray-900 dark:text-white"
+          >
+            Nouveau mot de passe
+          </motion.h2>
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10"
-          >
+        <motion.div
+          variants={pageVariants}
+          className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"
+        >
+          <div className="bg-grenn-500 dark:bg-gray-800 py-8 px-6 shadow-xl rounded-2xl sm:px-10">
             {success ? (
-              <div className="text-center text-green-600 dark:text-green-400">
-                {success}
-              </div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center space-y-4"
+              >
+                <div className="mx-auto h-16 w-16  text-[#0927EB]">
+                  <svg className="h-full w-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <p className="text-lg font-medium text-gray-900 dark:text-gray-100">{success}</p>
+              </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <motion.form
+                onSubmit={handleSubmit}
+                className="space-y-6"
+                initial="hidden"
+                animate="visible"
+              >
+                <motion.div variants={formItemVariants}>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Nouveau mot de passe
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="mt-1 block w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-200"
+                    />
                   </label>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  />
-                </div>
+                </motion.div>
 
-                <div>
-                  <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Confirmer le mot de passe
+                <motion.div variants={formItemVariants}>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Confirmation
+                    <input
+                      type="password"
+                      required
+                      value={passwordConfirmation}
+                      onChange={(e) => setPasswordConfirmation(e.target.value)}
+                      className="mt-1 block w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-200"
+                    />
                   </label>
-                  <input
-                    type="password"
-                    required
-                    value={passwordConfirmation}
-                    onChange={(e) => setPasswordConfirmation(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  />
-                </div>
+                </motion.div>
 
                 {error && (
-                  <div className="text-red-600 dark:text-red-400 text-sm">
-                    {error}
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center space-x-2 text-red-600 dark:text-red-300"
+                  >
+                    <svg className="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm">{error}</span>
+                  </motion.div>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                >
-                  {isLoading ? 'En cours...' : 'Réinitialiser'}
-                </button>
-              </form>
+                <motion.div variants={formItemVariants}>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-xl shadow-sm text-base font-medium text-white bg-[#0927EB]  hover:bg-blue-600 focus:outline-none focus:ring-2 disabled:opacity-50 transition-all duration-200"
+                  >
+                    {isLoading ? (
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : (
+                      'Réinitialiser'
+                    )}
+                  </button>
+                </motion.div>
+              </motion.form>
             )}
+          </div>
+
+          <motion.div
+            variants={formItemVariants}
+            className="mt-6 text-center text-sm"
+          >
+            <Link
+              to="/login"
+              className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+            >
+              Retour à la connexion
+            </Link>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 }

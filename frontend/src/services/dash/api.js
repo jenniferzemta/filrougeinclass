@@ -12,4 +12,7 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+export const getEtudiant = (id) => api.get(`/etudiant/${id}`);
+export const updateEtudiant = (id, data) => api.put(`/etudiant/${id}`, data);
+
 export default api;

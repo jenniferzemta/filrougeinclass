@@ -20,6 +20,10 @@ import ProfileSettings from "../components/etudiant/ProfileSettings"
 import SupportContent from "../components/etudiant/SupportContent"
 import SchedulesContent from "../components/etudiant/ScheduleContent"
 import logo from './../assets/logo.png';
+import { logout } from "../services/auth"
+import { useNavigate } from "react-router-dom"
+import Calendar from "../components/Calendar/Calendar"
+import ScheduleContent from "../components/etudiant/ScheduleContent"
 export default function Etudash() {
   // États
   const [darkMode, setDarkMode] = useState(false)
@@ -28,6 +32,7 @@ export default function Etudash() {
   const [searchTerm, setSearchTerm] = useState("")
   const [hasNewOffers, setHasNewOffers] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const  navigate = useNavigate();
 
   // Initialisation du thème
   useEffect(() => {
@@ -62,6 +67,17 @@ export default function Etudash() {
       setHasNewOffers(false)
     }
   }
+
+  //deconnexion
+   //logout 
+    const handleLogout = async () => {
+      try {
+        await logout();
+        navigate('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    };
 
   const SidebarItem = ({ icon, text, active, hasAlert, section }) => {
     return (
@@ -128,12 +144,7 @@ export default function Etudash() {
 
         {/* Navigation */}
         <nav className="flex-1 flex flex-col px-4 py-8 space-y-2 overflow-y-auto">
-          <SidebarItem
-            icon={<HomeIcon className="h-5 w-5" />}
-            text="Tableau de bord"
-            active={activeSection === "dashboard"}
-            section="dashboard"
-          />
+        
           <SidebarItem
             icon={<AcademicCapIcon className="h-5 w-5" />}
             text="Emploi du temps"
@@ -159,18 +170,22 @@ export default function Etudash() {
             active={activeSection === "settings"}
             section="settings"
           />
+              {/* Pied de page */}
+         
+          <div className="pt-2 mt-2 border-white/30 w-full flex justify-center md:justify-start  rounded-lg text-white hover:bg-white  hover:text-[#0927eb]">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 m-2  text-sm  rounded"
+          >
+            <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+            Déconnexion
+          </button>
+       
+      </div>
         </nav>
 
-        {/* Pied de page */}
-        <div className="p-4 border-t border-white/20">
-          <button
-            className="flex items-center w-full p-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-            onClick={() => console.log("Déconnexion")}
-          >
-            <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-3" />
-            <span className="text-sm font-medium">Déconnexion</span>
-          </button>
-        </div>
+    
+       
       </aside>
     </>
   )
@@ -185,7 +200,7 @@ export default function Etudash() {
           </div>
         )
       case "emploi":
-        return <SchedulesContent/>
+        return <ScheduleContent/>
       case "offre":
         return <StageContent />
       case "support":
@@ -193,7 +208,7 @@ export default function Etudash() {
       case "settings":
         return <ProfileSettings />
       default:
-        return <StageContent />
+        return <Schedules />
     }
   }
 

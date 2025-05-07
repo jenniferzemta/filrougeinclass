@@ -1,5 +1,5 @@
-
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   SunIcon,
   MoonIcon,
@@ -14,21 +14,19 @@ import {
   Cog6ToothIcon,
   ArrowLeftOnRectangleIcon,
   HomeIcon,
-  PlusIcon,
   PencilIcon,
-  TrashIcon,
   XMarkIcon,
   Bars3Icon,
 } from "@heroicons/react/24/outline"
-
-
+import logo from "./../assets/logo.png"
 import DepartmentsContents from "../components/ra/DepartmentsContents"
 
-import SallesContent from "../components/ra/SallesContent" ;
-import MatieresContent from "../components/ra/MatieresContent";
-import CoursContent from "../components/ra/CoursContent";
-import EmploiDuTemps from "../components/ra/EmploiDuTemps";
-
+import SallesContent from "../components/ra/SallesContent"
+import MatieresContent from "../components/ra/MatieresContent"
+import CoursContent from "../components/ra/CoursContent"
+import Calendar from "../components/Calendar/Calendar"
+import { logout } from "../services/auth"
+import ProfileRA from "../components/ra/ProfileRA"
 
 export default function Radash() {
   const [darkMode, setDarkMode] = useState(false)
@@ -39,55 +37,8 @@ export default function Radash() {
   const [modalAction, setModalAction] = useState("add")
   const [selectedItem, setSelectedItem] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Données mock
-  const stats = [
-    {
-      id: 1,
-      name: "Étudiants",
-      value: "1,248",
-      icon: AcademicCapIcon,
-      change: "+12%",
-      color: "bg-[#0927EB]/10 text-[#0927EB]",
-    },
-    { id: 2, name: "RA", value: "24", icon: UsersIcon, change: "+2", color: "bg-[#16A637]/10 text-[#16A637]" },
-    { id: 3, name: "RS", value: "18", icon: UsersIcon, change: "+3", color: "bg-[#FD6E47]/10 text-[#FD6E47]" },
-    {
-      id: 4,
-      name: "Professeurs",
-      value: "94",
-      icon: UsersIcon,
-      change: "+5%",
-      color: "bg-[#0927EB]/10 text-[#0927EB]",
-    },
-    {
-      id: 5,
-      name: "Salles",
-      value: "42",
-      icon: BuildingOffice2Icon,
-      change: "",
-      color: "bg-[#FD6E47]/10 text-[#FD6E47]",
-    },
-    {
-      id: 6,
-      name: "EDT Actifs",
-      value: "36",
-      icon: CalendarIcon,
-      change: "+4",
-      color: "bg-[#16A637]/10 text-[#16A637]",
-    },
-  ]
-
- 
-  const schedules = [
-    { id: 1, course: "Algorithmique Avancée", day: "Lundi", startTime: "08:30", endTime: "10:30", room: "A101" },
-    { id: 2, course: "Gestion de Projet", day: "Mardi", startTime: "10:45", endTime: "12:45", room: "B205" },
-    { id: 3, course: "IA Fondamentale", day: "Mercredi", startTime: "14:00", endTime: "16:00", room: "C103" },
-    { id: 4, course: "Analyse Mathématique", day: "Jeudi", startTime: "08:30", endTime: "10:30", room: "A204" },
-    { id: 5, course: "Physique Quantique", day: "Vendredi", startTime: "10:45", endTime: "12:45", room: "B102" },
-  ]
-
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const navigate = useNavigate()
   // Effet pour le mode sombre
   useEffect(() => {
     if (darkMode) {
@@ -124,70 +75,98 @@ export default function Radash() {
     )
   }
 
+  //logout 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
   // Remplacer le composant Sidebar par celui fourni par l'utilisateur
   const Sidebar = () => (
-    <div className="w-16 md:w-56 h-screen bg-[#0927EB] font-open flex flex-col transition-all duration-300 border-r border-gray-200 fixed lg:static z-50">
+    <div
+      className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} w-16 md:w-56 h-screen bg-[#0927EB] font-open flex flex-col transition-all duration-300 border-r border-gray-200 fixed lg:static z-50`}
+    >
       {/* Logo avec séparateur */}
-      <div className="p-4 flex justify-center items-center h-24 border-opacity-20">
-        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center overflow-hidden">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center">
-            <div className="h-5 w-5 rounded-full bg-[#FD6E47] flex items-center justify-center">
-              <div className="h-2.5 w-2.5 rounded-full bg-[#16A637]"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="mt-5 border-b border-white"></div>
-
+    <div className="flex items-center justify-center h-16 px-4 py-10 border-b border-white/10">
+            <div className="w-48 h-32 md:w-48 md:h-32 rounded-full flex items-center justify-center mt-8 overflow-hidden">
+                <img  src={logo}  className="w-48 object-center object-contain " alt="Logo"  />
+              </div>
+              </div>
+              <div className=" py-5 border-b border-white"></div>
+          
       {/* Navigation */}
       <nav className="flex-1 flex flex-col items-center md:items-start px-2 space-y-1 mt-5 overflow-y-auto">
         <SidebarItem
           icon={<HomeIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Tableau de bord"
           active={activeSection === "dashboard"}
-          onClick={() => setActiveSection("dashboard")}
+          onClick={() => {
+            setActiveSection("dashboard")
+            setSidebarOpen(false)
+          }}
         />
-          <SidebarItem
+        <SidebarItem
           icon={<UsersIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Départements"
           active={activeSection === "departments"}
-          onClick={() => setActiveSection("departments")}
+          onClick={() => {
+            setActiveSection("departments")
+            setSidebarOpen(false)
+          }}
         />
         <SidebarItem
           icon={<BuildingOffice2Icon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Salles"
           active={activeSection === "salles"}
-          onClick={() => setActiveSection("salles")}
+          onClick={() => {
+            setActiveSection("salles")
+            setSidebarOpen(false)
+          }}
         />
         <SidebarItem
           icon={<BookOpenIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Matières"
           active={activeSection === "matieres"}
-          onClick={() => setActiveSection("matieres")}
+          onClick={() => {
+            setActiveSection("matieres")
+            setSidebarOpen(false)
+          }}
         />
         <SidebarItem
           icon={<AcademicCapIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Cours"
           active={activeSection === "courses"}
-          onClick={() => setActiveSection("courses")}
+          onClick={() => {
+            setActiveSection("courses")
+            setSidebarOpen(false)
+          }}
         />
         <SidebarItem
           icon={<CalendarIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Emploi du temps"
           active={activeSection === "schedules"}
-          onClick={() => setActiveSection("schedules")}
+          onClick={() => {
+            setActiveSection("schedules")
+            setSidebarOpen(false)
+          }}
         />
         <SidebarItem
           icon={<Cog6ToothIcon className="h-5 w-5 md:h-6 md:w-6" />}
           text="Paramètres"
           active={activeSection === "settings"}
-          onClick={() => setActiveSection("settings")}
+          onClick={() => {
+            setActiveSection("settings")
+            setSidebarOpen(false)
+          }}
         />
         <div className="pt-4 mt-4 border-t border-white/30 w-full flex justify-center md:justify-start">
           <SidebarItem
             icon={<ArrowLeftOnRectangleIcon className="h-5 w-5 md:h-6 md:w-6" />}
             text="Déconnexion"
-            onClick={() => console.log("Déconnexion")}
+            onClick={(handleLogout)}
           />
         </div>
       </nav>
@@ -226,9 +205,9 @@ export default function Radash() {
       case "courses":
         return <CoursContent />
       case "schedules":
-        return <EmploiDuTemps />
+        return <Calendar />
       case "settings":
-        return <SettingsContent />
+        return <ProfileRA />
       default:
         return <DashboardContent />
     }
@@ -240,7 +219,7 @@ export default function Radash() {
       <h1 className="text-2xl font-bold mb-6">Tableau de bord</h1>
 
       {/* Cartes statistiques */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
         {stats.map((stat) => (
           <div key={stat.id} className="rounded-lg p-4 shadow bg-white dark:bg-gray-800">
             <div className="flex items-center">
@@ -261,7 +240,7 @@ export default function Radash() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Bannière de bienvenue */}
       <div className="rounded-lg p-6 mb-8 bg-gradient-to-r from-[#0927EB] to-[#0927EB]/80 text-white">
@@ -276,35 +255,35 @@ export default function Radash() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <SectionPreview
           title="Départements"
-        //  count={dept.length}
+          //  count={dept.length}
           icon={<UsersIcon className="h-6 w-6" />}
           color="bg-[#0927EB]/10 text-[#0927EB]"
           onClick={() => setActiveSection("departments")}
         />
         <SectionPreview
           title="Salles"
-         // count={salles.length}
+          // count={salles.length}
           icon={<BuildingOffice2Icon className="h-6 w-6" />}
           color="bg-[#FD6E47]/10 text-[#FD6E47]"
           onClick={() => setActiveSection("rooms")}
         />
         <SectionPreview
           title="Matières"
-        //  count={subjects.length}
+          //  count={subjects.length}
           icon={<BookOpenIcon className="h-6 w-6" />}
           color="bg-[#16A637]/10 text-[#16A637]"
           onClick={() => setActiveSection("subjects")}
         />
         <SectionPreview
           title="Cours"
-         // count={courses.length}
+          // count={courses.length}
           icon={<AcademicCapIcon className="h-6 w-6" />}
           color="bg-[#0927EB]/10 text-[#0927EB]"
           onClick={() => setActiveSection("courses")}
         />
         <SectionPreview
           title="Emploi du temps"
-         // count={schedules.length}
+          // count={schedules.length}
           icon={<CalendarIcon className="h-6 w-6" />}
           color="bg-[#FD6E47]/10 text-[#FD6E47]"
           onClick={() => setActiveSection("schedules")}
@@ -387,103 +366,6 @@ export default function Radash() {
     </li>
   )
 
-  // Composant pour la gestion des emplois du temps
-  const SchedulesContent = () => {
-    const filteredSchedules = filterData(schedules)
-
-    return (
-      <>
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Emploi du temps</h1>
-          <button
-            className="px-4 py-2 bg-[#0927EB] text-white rounded-md hover:bg-[#0927EB]/90 flex items-center"
-            onClick={() => openModal("schedule", "add")}
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            Ajouter un créneau
-          </button>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Rechercher un créneau..."
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Cours
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Jour
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Horaire
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Salle
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {filteredSchedules.map((schedule) => (
-                  <tr key={schedule.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900 dark:text-white">{schedule.course}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">{schedule.day}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-300">
-                      {schedule.startTime} - {schedule.endTime}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#0927EB]/10 text-[#0927EB]">
-                        {schedule.room}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        className="text-[#0927EB] dark:text-blue-400 hover:text-[#0927EB]/80 dark:hover:text-blue-300 mr-3"
-                        onClick={() => openModal("schedule", "edit", schedule)}
-                      >
-                        <PencilIcon className="h-5 w-5" />
-                      </button>
-                      <button
-                        className="text-[#FD6E47] dark:text-red-400 hover:text-[#FD6E47]/80 dark:hover:text-red-300"
-                        onClick={() => openModal("schedule", "delete", schedule)}
-                      >
-                        <TrashIcon className="h-5 w-5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {filteredSchedules.length === 0 && (
-            <div className="p-6 text-center text-gray-500 dark:text-gray-400">Aucun créneau trouvé</div>
-          )}
-        </div>
-      </>
-    )
-  }
-
   // Composant pour les paramètres
   const SettingsContent = () => (
     <>
@@ -520,38 +402,9 @@ export default function Radash() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-          <div>
-            <p className="font-medium">Notifications</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Recevoir des notifications système</p>
-          </div>
-          <div className="relative inline-block w-12 h-6 transition duration-200 ease-in-out rounded-full cursor-pointer">
-            <input
-              type="checkbox"
-              id="notificationsToggle"
-              className="absolute w-0 h-0 opacity-0"
-              defaultChecked={true}
-            />
-            <label
-              htmlFor="notificationsToggle"
-              className="block w-12 h-6 overflow-hidden rounded-full cursor-pointer bg-[#0927EB]"
-            >
-              <span className="absolute block w-5 h-5 mt-0.5 ml-0.5 rounded-full bg-white shadow transform translate-x-6"></span>
-            </label>
-          </div>
-        </div>
+       
 
-        <div className="flex items-center justify-between py-3">
-          <div>
-            <p className="font-medium">Langue</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Choisir la langue de l'interface</p>
-          </div>
-          <select className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-            <option value="fr">Français</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
-        </div>
+        
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -562,8 +415,8 @@ export default function Radash() {
             A
           </div>
           <div className="ml-4">
-            <p className="font-medium">Admin</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">admin@academipro.com</p>
+            {/* <p className="font-medium">Admin</p> */}
+            {/* <p className="text-sm text-gray-500 dark:text-gray-400">admin@academipro.com</p> */}
           </div>
         </div>
 
@@ -573,10 +426,7 @@ export default function Radash() {
             Modifier le profil
           </button>
 
-          <button className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center">
-            <Cog6ToothIcon className="h-5 w-5 mr-2" />
-            Paramètres avancés
-          </button>
+      
 
           <button className="w-full px-4 py-2 bg-[#FD6E47]/10 text-[#FD6E47] rounded-md hover:bg-[#FD6E47]/20 flex items-center justify-center">
             <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-2" />
@@ -595,8 +445,6 @@ export default function Radash() {
     let content = null
 
     switch (modalType) {
-  
-
       case "schedule":
         title =
           modalAction === "add"
@@ -640,131 +488,6 @@ export default function Radash() {
     )
   }
 
-  
-  // Contenu de la modale pour les emplois du temps
-  const ScheduleModalContent = () => {
-    if (modalAction === "delete") {
-      return (
-        <div>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">
-            Êtes-vous sûr de vouloir supprimer ce créneau pour le cours "{selectedItem?.course}" ? Cette action est
-            irréversible.
-          </p>
-          <div className="flex justify-end space-x-3">
-            <button
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
-              onClick={closeModal}
-            >
-              Annuler
-            </button>
-            <button
-              className="px-4 py-2 bg-[#FD6E47] text-white rounded-md hover:bg-[#FD6E47]/90"
-              onClick={() => {
-                // Logique de suppression
-                closeModal()
-              }}
-            >
-              Supprimer
-            </button>
-          </div>
-        </div>
-      )
-    }
-
-    return (
-      <form className="space-y-4">
-        <div>
-          <label htmlFor="course" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Cours
-          </label>
-          <select
-            id="course"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            defaultValue={selectedItem?.course || ""}
-          >
-            <option value="">Sélectionner un cours</option>
-            {courses.map((course) => (
-              <option key={course.id} value={course.name}>
-                {course.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="day" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Jour
-          </label>
-          <select
-            id="day"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            defaultValue={selectedItem?.day || ""}
-          >
-            <option value="">Sélectionner un jour</option>
-            <option value="Lundi">Lundi</option>
-            <option value="Mardi">Mardi</option>
-            <option value="Mercredi">Mercredi</option>
-            <option value="Jeudi">Jeudi</option>
-            <option value="Vendredi">Vendredi</option>
-            <option value="Samedi">Samedi</option>
-          </select>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Heure de début
-            </label>
-            <input
-              type="time"
-              id="startTime"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              defaultValue={selectedItem?.startTime || ""}
-            />
-          </div>
-          <div>
-            <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Heure de fin
-            </label>
-            <input
-              type="time"
-              id="endTime"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              defaultValue={selectedItem?.endTime || ""}
-            />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="room" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Salle
-          </label>
-          <select
-            id="room"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            defaultValue={selectedItem?.room || ""}
-          >
-            <option value="">Sélectionner une salle</option>
-            {rooms.map((room) => (
-              <option key={room.id} value={room.name}>
-                {room.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex justify-end space-x-3 pt-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
-            onClick={closeModal}
-          >
-            Annuler
-          </button>
-          <button type="submit" className="px-4 py-2 bg-[#0927EB] text-white rounded-md hover:bg-[#0927EB]/90">
-            {modalAction === "add" ? "Ajouter" : "Enregistrer"}
-          </button>
-        </div>
-      </form>
-    )
-  }
-
   // Modifier la structure principale pour que le mode sombre n'affecte pas la sidebar
   return (
     <div className="min-h-screen">
@@ -804,8 +527,9 @@ export default function Radash() {
                           : activeSection === "courses"
                             ? "Cours"
                             : activeSection === "schedules"
-                              ? "Emploi du temps"
-                              : "Paramètres"}
+                            ? "Emplois de temps"
+                          
+                            : "Paramètres"}
                 </div>
 
                 {/* Barre de recherche (masquée sur mobile) */}

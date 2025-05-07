@@ -14,7 +14,7 @@ class EmploiDuTemps extends Model
         'start',
         'end',
         'cours_id',
-        'metadata'
+
     ];
 
     protected $casts = [

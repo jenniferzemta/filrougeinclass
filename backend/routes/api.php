@@ -19,23 +19,42 @@ use App\Http\Controllers\OffreController;
 use App\Http\Controllers\SupportCoursController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\RaProfileController;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function () {
+    // POST /logout
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+// get/user
+    Route::get('/user', [AuthController::class, 'user']);
+});
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('etudiant/profile')->group(function () {
-        Route::get('/', [EtudiantProfileController::class, 'show']);
-        Route::put('/', [EtudiantProfileController::class, 'update']);
-        Route::post('/', [EtudiantProfileController::class, 'changePassword']);
+
+Route::get('/{id}', [EtudiantProfileController::class, 'show']);
+Route::put('/{id}', [EtudiantProfileController::class, 'update']);
+Route::post('/', [EtudiantProfileController::class, 'changePassword']);
     });
 
+        //ra
+         // Routes pour les Responsables Académiques
+    Route::prefix('ra/profile')->group(function () {
+        Route::get('/', [RaProfileController::class, 'show']);
+        Route::put('/', [RaProfileController::class, 'update']);
+        Route::post('/', [RaProfileController::class, 'changePassword']);
+    
+
+        //logout
+        Route::post('/logout', [AuthController::class, 'logout']);
+    });
  
 });
-
-   
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -45,24 +64,13 @@ Route::post('/login', [AuthController::class, 'login']);
 // Route::post('/forgot-password', [PasswordController::class, 'sendResetLink']);
 // Route::post('/reset-password', [PasswordController::class, 'reset']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin/stats', [AuthController::class, 'getStats']);
     Route::get('/admin/users', [AuthController::class, 'getUsers']);
     Route::delete('/admin/users/{user}', [AuthController::class, 'deleteUser']);
-     // Gestion utilisateurs
+    // Gestion utilisateurs
     Route::get('/users/{role}', [AuthController::class, 'getUsersByRole']);
     Route::put('/users/{user}', [AuthController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}', [AuthController::class, 'deleteUser']);
-});
-
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-    ->middleware(['signed'])->name('verification.verify');
-
-Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
-    ->middleware(['auth:sanctum', 'throttle:6,1']);
 
 //    profile
     Route::put('/profile', [ProfileController::class, 'updateProfile']);

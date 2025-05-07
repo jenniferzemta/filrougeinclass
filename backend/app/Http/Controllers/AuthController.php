@@ -162,30 +162,14 @@ public function updateUser(Request $request, $id)
             return response()->json(['error' => 'Action non autorisée'], 403);
         }
         $validated = $request->validate([
-            'nom' => 'sometimes|string|max:255',
-            'prenom' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,'.$user->id,
             'role' => 'sometimes|in:ra,rs,Etudiant,Enseignant,Admin',
             'department_id' => 'sometimes|exists:departments,id',
-            'matricule' => 'sometimes|required_if:role,Etudiant,Enseignant|unique:users,matricule,'.$user->id,
-            'numero_badge' => 'sometimes|required_if:role,ra,rs|unique:users,numero_badge,'.$user->id
+           
+           
         ]);
     
-        // Mise à jour conditionnelle des champs
-        if (isset($validated['nom']) || isset($validated['prenom'])) {
-            $validated['name'] = $validated['nom'] . ' ' . $validated['prenom'];
-        }
-    
-        // Réinitialiser les champs si le rôle change
-        if ($request->has('role') && $request->role !== $user->role) {
-            $validated['matricule'] = $request->role === 'Etudiant' || $request->role === 'Enseignant' 
-                ? $validated['matricule'] 
-                : null;
-            
-            $validated['numero_badge'] = $request->role === 'ra' || $request->role === 'rs' 
-                ? $validated['numero_badge'] 
-                : null;
-        }
+        $validated['role'] ;
+        $validated['department_id'] ;
     
         $user->update($validated);
     
@@ -203,6 +187,6 @@ public function updateUser(Request $request, $id)
 }
 
 
-
+  
 
 }
