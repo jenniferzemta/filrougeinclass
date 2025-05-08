@@ -221,6 +221,7 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-2">
                   <UserCircleIcon className="h-8 w-8" />
                   <span className="hidden md:inline">Admin</span>
+                  
                 </div>
               </div>
             </div>
@@ -279,7 +280,7 @@ const Dashboard = () => {
           
           {/* Bannière de bienvenue */}
           <div className={`rounded-lg p-6 mb-8 bg-gradient-to-r from-blue-600 to-blue-800 text-white`}>
-            <h2 className="text-2xl font-bold mb-2">Bienvenue sur EduManager</h2>
+            <h2 className="text-2xl font-bold mb-2">Bienvenue sur AKADEMIC</h2>
             <p className="max-w-3xl">
               Votre plateforme complète de gestion académique. Gérez les emplois du temps, 
               les ressources pédagogiques, les stages et bien plus encore en toute simplicité.

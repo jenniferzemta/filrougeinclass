@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion"
 import Navbar from "../../components/layouts/Navbar"
 import {
@@ -372,7 +371,7 @@ export default function Services() {
               <div className="p-6 bg-gray-50 dark:bg-gray-700">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Essentiel</h3>
                 <p className="mt-4">
-                  <span className="text-3xl font-extrabold text-gray-900 dark:text-white">€99</span>
+                  <span className="text-3xl font-extrabold text-gray-900 dark:text-white">2000 FCFA</span>
                   <span className="text-gray-600 dark:text-gray-300"> /mois</span>
                 </p>
                 <p className="mt-2 text-gray-600 dark:text-gray-300">Pour les petits établissements</p>
@@ -423,7 +422,7 @@ export default function Services() {
               <div className="p-6 bg-[#0927EB]">
                 <h3 className="text-lg font-medium text-white">Pro</h3>
                 <p className="mt-4">
-                  <span className="text-3xl font-extrabold text-white">€199</span>
+                  <span className="text-3xl font-extrabold text-white">5000 FCFA</span>
                   <span className="text-blue-100"> /mois</span>
                 </p>
                 <p className="mt-2 text-blue-100">Pour les établissements moyens</p>
@@ -474,7 +473,7 @@ export default function Services() {
               <div className="p-6 bg-gray-50 dark:bg-gray-700">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Entreprise</h3>
                 <p className="mt-4">
-                  <span className="text-3xl font-extrabold text-gray-900 dark:text-white">€399</span>
+                  <span className="text-3xl font-extrabold text-gray-900 dark:text-white">1000 FCFA</span>
                   <span className="text-gray-600 dark:text-gray-300"> /mois</span>
                 </p>
                 <p className="mt-2 text-gray-600 dark:text-gray-300">Pour les grands établissements</p>

@@ -79,7 +79,7 @@ export default function OffreModal({ isOpen, onClose, onSave, offre, actionType 
 
           <div className="mb-4">
             <label className="block mb-2 font-medium">
-              {actionType === 'add' ? 'Image *' : 'Nouvelle image'}
+              {actionType === 'add' ? 'Image' : 'Nouvelle image'}
             </label>
             <input
               type="file"

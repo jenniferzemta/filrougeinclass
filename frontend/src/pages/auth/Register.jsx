@@ -105,6 +105,7 @@ export default function Register() {
           if (error.response) {
             console.error('Détails de l\'erreur:', error.response.data);
             setError(err.message || 'Une erreur est survenue lors de l\'inscription');
+            
             toast.error('Erreur lors de l\'inscription : ' + (error.response.data.message || 'Erreur inconnue'));
           } else {
             toast.error(error.message);

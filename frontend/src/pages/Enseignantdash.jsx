@@ -11,13 +11,21 @@ import {
   Bars3Icon,
   HomeIcon,
   ChartBarIcon,
-  CogIcon,
+  AcademicCapIcon,DocumentIcon, CogIcon, Cog6ToothIcon
 } from "@heroicons/react/24/outline"
 import SupportProfContent from "../components/enseignant/SupportProfContent"
+import Calendar from "../components/Calendar/Calendar"
+import { logout } from "../services/auth"
+import { useNavigate } from "react-router-dom"
+import CalendarE from "../components/enseignant/CalendarE"
+
+
 export default function EnseignantDash() {
   const [darkMode, setDarkMode] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [activeSection, setActiveSection] = useState("emploi")
+  const navigate= useNavigate()
 
   useEffect(() => {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -35,7 +43,34 @@ export default function EnseignantDash() {
     setDarkMode(newMode)
     localStorage.setItem("darkMode", newMode.toString())
   }
+//deconnexion
+   //logout 
+    const handleLogout = async () => {
+      try {
+        await logout();
+        navigate('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    };
+    const MainContent = () => {
+        switch (activeSection) {
+          case "dashboard":
+            return (
+              <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow">
+                <h2 className="text-2xl font-bold mb-4">Tableau de bord</h2>
+                <p className="text-gray-600 dark:text-gray-300">Contenu du tableau de bord...</p>
+              </div>
+            )
+          case "emploi":
+            return <CalendarE/>
+          case "support":
+            return <SupportProfContent />
 
+          default:
+            return <Calendar />
+        }
+      }
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {sidebarOpen && (
@@ -60,9 +95,37 @@ export default function EnseignantDash() {
 
           <div className="px-4 py-6">
             <nav className="space-y-1">
-              <SidebarItem icon={<HomeIcon className="h-5 w-5" />} text="Tableau de bord" />
-              <SidebarItem icon={<BookOpenIcon className="h-5 w-5" />} text="Supports de cours" active />
-              <SidebarItem icon={<CogIcon className="h-5 w-5" />} text="Paramètres" />
+              <SidebarItem
+                         icon={<AcademicCapIcon className="h-5 w-5" />}
+                         text="Emploi du temps"
+                         active={activeSection === "emploi"}
+                         section="emploi"
+                       />
+                  
+                       <SidebarItem
+                         icon={<DocumentIcon className="h-5 w-5" />}
+                         text="Support de cours"
+                         active={activeSection === "support"}
+                         section="support"
+                       />
+                       <SidebarItem
+                         icon={<Cog6ToothIcon className="h-5 w-5" />}
+                         text="Paramètres"
+                         active={activeSection === "settings"}
+                         section="settings"
+                       />
+                           {/* Pied de page */}
+                      
+                       <div className="pt-2 mt-2 border-white/30 w-full flex justify-center md:justify-start  rounded-lg text-white hover:bg-white  hover:text-[#0927eb]">
+                       <button
+                         onClick={handleLogout}
+                         className="flex items-center gap-2 px-4 m-2  text-sm  rounded"
+                       >
+                         <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+                         Déconnexion
+                       </button>
+                    
+                   </div>
             </nav>
           </div>
 
@@ -122,7 +185,9 @@ export default function EnseignantDash() {
           </header>
 
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <SupportProfContent searchTerm={searchTerm} />
+            {/* <SupportProfContent searchTerm={searchTerm} /> */}
+            <MainContent/>
+            
           </main>
 
           <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 px-6 transition-colors duration-300">

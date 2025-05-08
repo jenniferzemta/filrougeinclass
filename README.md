@@ -52,7 +52,7 @@ Backend (Laravel)
 
 bash
 # Cloner le dépôt
-git clone [] backend
+git clone https://github.com/jenniferzemta/filrougeinclass backend
 cd backend
 
 # Installer les dépendances
@@ -138,3 +138,13 @@ Ouvrez une Pull Request
 
 ✉️ Contact
 Votre nom : ZEMTA JENNIFER - laurejennifer06@gmail.com
+
+
+
+
+Connexion:
+user admin :marie.dupont@example.com passqord: password1234
+user ra: fill@gmail.com password : 12345678
+user rs:
+user etudiant:cyprien@gmail.com 12345678
+user Enseignant: marie@example.com 12345678

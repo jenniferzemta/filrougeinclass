@@ -1,4 +1,6 @@
 import {Link} from "react-router-dom"
+// Placeholder for the logo import
+import logoPlaceholder from "./../../assets/logo.png"
 
 export default function Footer() {
   return (
@@ -159,14 +161,19 @@ export default function Footer() {
 
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
-            <div className="h-8 w-8 rounded-full bg-[#0927EB] flex items-center justify-center mr-2">
-              <div className="h-4 w-4 rounded-full bg-[#FD6E47] flex items-center justify-center">
-                <div className="h-2 w-2 rounded-full bg-[#16A637]"></div>
-              </div>
-            </div>
-            <span className="text-xl font-bold">AKADEMIC</span>
+            <div className="flex-shrink-0 flex-row">
+                       <a href="/home" className="flex items-center ">
+                         <img
+                           src={logoPlaceholder || "/placeholder.svg"}
+                           alt="AcademicFlow Logo"
+                           className="h-20 w-20 object-contain rounded-2xl"
+                         />
+                       </a>
+                      
+                     </div>
+                     <span className="text-xl  m-10 font-bold">AKADEMIC</span>
           </div>
-          <p className="text-sm text-gray-400">© {new Date().getFullYear()} AcademiPro. Tous droits réservés.</p>
+          <p className="text-sm text-gray-400">© {new Date().getFullYear()} Akademic. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

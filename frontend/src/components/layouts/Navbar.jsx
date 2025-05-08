@@ -40,7 +40,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="/" className="flex items-center">
+            <a href="/home" className="flex items-center">
               <img
                 src={logoPlaceholder || "/placeholder.svg"}
                 alt="AcademicFlow Logo"

@@ -50,6 +50,7 @@ export default function Login() {
     } catch (error) {
       toast.error(error.message || 'Échec de la connexion');
       console.error('Erreur de connexion:', error);
+      window.confirm(error.message);
     }
   };
 

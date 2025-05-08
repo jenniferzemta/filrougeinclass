@@ -5,11 +5,27 @@ import {
   BriefcaseIcon,
   AcademicCapIcon,
   UsersIcon,
-  CogIcon
+  CogIcon, ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import logo from "./../../assets/logo.png";
+import {logout } from "../../services/auth"
+import { useNavigate } from 'react-router-dom';
+
 
 const Sidebar = () => {
+const navigate = useNavigate();
+ //logout 
+
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <div className="w-16 md:w-56 h-screen bg-[#0927EB] flex flex-col transition-all duration-300 border-r border-gray-200">
       {/* Logo section */}
@@ -56,7 +72,20 @@ const Sidebar = () => {
           text="Paramètres" 
           to="/parametres" 
         />
+
       </nav>
+      
+ <div className="pt-2 mt-2 border-white/30 w-full flex justify-center md:justify-start  rounded-lg text-white">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 m-2  text-sm  rounded"
+          >
+            <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+            Déconnexion
+          </button>
+       
+      </div>
+
     </div>
   );
 };

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Link } from "react-router-dom"
@@ -13,6 +11,7 @@ import {
 import { LinkedinIcon, TwitterIcon } from "react-share"
 import { FaGithub } from "react-icons/fa"
 import Navbar from "../../components/layouts/Navbar"
+
 import Footer from "../../components/layouts/Footer"
 
 // Placeholder images
@@ -20,6 +19,14 @@ const logcon =
   "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
 const team1 =
   "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80"
+
+  const team2 = "./../assets/photo15.jpg";
+  const team3 = "./assets/photo15.jpg";
+  const team4 = "../..assets/sophie.jpg";
+  const team5 = "./../../assets/photo15.jpg";
+  const team6 = "./../../assets/photo15.jpg";
+  const team7 = "./../../assets/photo15.jpg";
+  const team8 = "./../../assets/photo15.jpg";
 
 const About = () => {
   const [darkMode, setDarkMode] = useState(false)
@@ -55,50 +62,47 @@ const About = () => {
     {
       name: "Olivia Hughes",
       role: "Chief Technology Officer",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=761&q=80",
+      image:team2,
+        
     },
     {
       name: "Sophia Lewis",
       role: "IT Project Manager",
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+      image: team3,
     },
     {
       name: "Michael Brown",
       role: "Marketing Director",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-    },
+      image:team3,
+    }, 
     {
       name: "Emma Wilson",
       role: "UX Designer",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+      image: team4,
     },
     {
       name: "David Thompson",
       role: "Lead Developer",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+      image: team5,
+        
     },
     {
       name: "Sarah Johnson",
       role: "Product Manager",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80",
+      image:team6,
+       
     },
     {
       name: "Robert Garcia",
       role: "Data Scientist",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+      image:team7,
+       
     },
     {
       name: "Lisa Martinez",
       role: "Customer Success",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
+      image:team8,
+       
     },
   ]
 
@@ -171,7 +175,7 @@ const About = () => {
               filter: "brightness(0.7) contrast(1.1)",
             }}
           ></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0927eb]/90 via-[#0927eb]/60 to-[#000039]/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0927eb]/40 via-[#0927eb]/40 to-transparent"></div>
         </div>
 
         <div className="relative z-10 text-center px-4 w-full max-w-7xl mx-auto">
