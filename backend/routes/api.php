@@ -22,9 +22,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\RaProfileController;
 
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
     // POST /logout
@@ -32,39 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // get/user
     Route::get('/user', [AuthController::class, 'user']);
-});
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::prefix('etudiant/profile')->group(function () {
-
-Route::get('/{id}', [EtudiantProfileController::class, 'show']);
-Route::put('/{id}', [EtudiantProfileController::class, 'update']);
-Route::post('/', [EtudiantProfileController::class, 'changePassword']);
-    });
-
-        //ra
-         // Routes pour les Responsables Académiques
-    Route::prefix('ra/profile')->group(function () {
-        Route::get('/', [RaProfileController::class, 'show']);
-        Route::put('/', [RaProfileController::class, 'update']);
-        Route::post('/', [RaProfileController::class, 'changePassword']);
-    
-
-        //logout
-        Route::post('/logout', [AuthController::class, 'logout']);
-    });
- 
-});
-
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-
-
-// // Réinitialisation mot de passe
-// Route::post('/forgot-password', [PasswordController::class, 'sendResetLink']);
-// Route::post('/reset-password', [PasswordController::class, 'reset']);
-
-    Route::get('/admin/stats', [AuthController::class, 'getStats']);
+      Route::get('/admin/stats', [AuthController::class, 'getStats']);
     Route::get('/admin/users', [AuthController::class, 'getUsers']);
     Route::delete('/admin/users/{user}', [AuthController::class, 'deleteUser']);
     // Gestion utilisateurs
@@ -79,12 +49,16 @@ Route::post('/login', [AuthController::class, 'login']);
     // Départements
     Route::apiResource('departments', DepartmentController::class);
   
+  
+  
+
+});
     //salles
     Route::apiResource('salles', SalleController::class);
     // matieres
     Route::apiResource('matieres', MatieresController::class);
     //cours
-    Route::apiResource('cours', CoursController::class);
+    Route::apiResource(     'cours', CoursController::class);
 
     //emplodetemps
     Route::apiResource('edt' , EmploiTempsController::class);
@@ -93,38 +67,39 @@ Route::post('/login', [AuthController::class, 'login']);
     Route::get('/users', function() {
         return User::all();
     });
+    //supports
+   
+  Route::apiResource('supports', SupportCoursController::class);
+    Route::get('supports/{id}/download', [SupportCoursController::class, 'download']);
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('etudiant/profile')->group(function () {
+
+Route::get('/{id}', [EtudiantProfileController::class, 'show']);
+Route::put('/{id}', [EtudiantProfileController::class, 'update']);
+Route::post('/', [EtudiantProfileController::class, 'changePassword']);
+    });
+ 
+});
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+//etudiant
     Route::apiResource('offre', OffreController::class);
     Route::patch('offre/{id}/toggle-statut', [OffreController::class, 'toggleStatut']);
 
-
-
-
-    //supports
-    Route::apiResource('supports', SupportCoursController::class);
-    Route::get('/{id}/download', [SupportCoursController::class, 'download']);
-
-    //etudiant
+ //etudiant
     Route::get('/offres', [OffreController::class, 'activeStatut']);
     Route::get('/offres/{id}/download', [OffreController::class, 'downloadImage']);
 
 
 
-    // // Routes pour l'étudiant
-    // Route::prefix('etudiant')->group(function () {
-    // Route::get('/offres', [EtudiantController::class, 'index']);
-    // Route::get('/offres/{id}/download', [EtudiantController::class, 'downloadImage']);
-//});
-
-
 // routes/api.php
    Route::middleware(['auth:sanctum'])->prefix('ra')->group(function () {
-   
-   
-   
     
     // Emploi du temps
-    Route::post('/emploi-temps/generate', [RaController::class, 'generateEmploiTemps']);
+    // Route::post('/emploi-temps/generate', [RaController::class, 'generateEmploiTemps']);
 });
 
 

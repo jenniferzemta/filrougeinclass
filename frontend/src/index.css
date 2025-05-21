@@ -80,6 +80,10 @@ body {
   border-right: 1px solid #e0e0e0 !important;
 }
 
-
+iframe {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
 
 
